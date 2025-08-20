@@ -82,18 +82,33 @@ def download_sp500(dates: pd.Series, starting_equity: float = 100.0) -> pd.DataF
     start_date = pd.to_datetime(dates.min())
     end_date = pd.to_datetime(dates.max())
 
-    sp500 = yf.download("^GSPC", start=start_date, end=end_date + pd.Timedelta(days=1), progress=False)
+    try:
+        sp500 = yf.download(
+            "^GSPC",
+            start=start_date,
+            end=end_date + pd.Timedelta(days=1),
+            progress=False,
+        )
+        if sp500.empty:
+            raise ValueError("No data returned from Yahoo Finance")
+    except Exception:
+        url = "https://stooq.com/q/d/l/?s=gspc.us&i=d"
+        stooq = pd.read_csv(url)
+        stooq['Date'] = pd.to_datetime(stooq['Date'])
+        stooq.set_index('Date', inplace=True)
+        stooq.sort_index(inplace=True)
+        stooq = stooq.loc[(stooq.index >= start_date) & (stooq.index <= end_date)]
+        stooq['Adj Close'] = stooq['Close']
+        sp500 = stooq
     sp500 = cast(pd.DataFrame, sp500)
 
     if sp500.empty or "Close" not in sp500.columns:
         raise SystemExit("Failed to download S&P 500 data.")
 
-    # Align to portfolio dates & forward-fill missing days (weekends/holidays)
     aligned = sp500["Close"].reindex(pd.to_datetime(dates)).ffill().bfill()
     norm = _normalize_to_start(aligned, starting_equity)
 
     return pd.DataFrame({"Date": pd.to_datetime(dates), "SPX Value": norm.values})
-
 
 def plot_comparison(
     portfolio: pd.DataFrame,
