@@ -1,1 +1,22 @@
-CLAUDE.md
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+
+# Data/outputs
+*.csv
+!Start Your Own/chatgpt_portfolio_update.csv
+!Start Your Own/chatgpt_trade_log.csv

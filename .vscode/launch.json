@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug trading_script",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/trading_script.py",
+            "args": [
+                "--file",
+                "${workspaceFolder}/Start Your Own/chatgpt_portfolio_update.csv"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONWARNINGS": "ignore"
+            }
+        }
+    ]
+}

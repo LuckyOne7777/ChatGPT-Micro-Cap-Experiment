@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run trading_script (default CSV)",
+            "type": "shell",
+            "command": "${workspaceFolder}/.venv/bin/python",
+            "args": [
+                "${workspaceFolder}/trading_script.py",
+                "--file",
+                "${workspaceFolder}/Start Your Own/chatgpt_portfolio_update.csv"
+            ],
+            "options": {
+                "env": {
+                    "PYTHONWARNINGS": "ignore"
+                }
+            },
+            "problemMatcher": []
+        }
+    ]
+}

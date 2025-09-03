@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.black-formatter",
+    "charliermarsh.ruff",
+    "GitHub.vscode-pull-request-github",
+    "eamodio.gitlens"
+  ]
+}

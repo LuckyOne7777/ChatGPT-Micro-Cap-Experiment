@@ -1,1 +1,3 @@
-Date,Ticker,Shares,Cost Basis,Stop Loss,Current Price,Total Value,PnL,Action,Cash Balance,Total Equity,Buy Price
+Date,Ticker,Shares,Buy Price,Cost Basis,Stop Loss,Current Price,Total Value,PnL,Action,Cash Balance,Total Equity
+2025-08-29,TLSA,62,1.83,113.46,1.47,1.81,112.22,-1.24,HOLD,,
+2025-08-29,TOTAL,,,,,,112.22,-1.24,,3.54,115.76
