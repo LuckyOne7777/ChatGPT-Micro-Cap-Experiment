@@ -34,7 +34,7 @@ save their CSV data inside this folder.
    python "Start Your Own/Generate_Graph.py"
    ```
 
-### Arguement Table for 'Generate_Graph.py'
+### Argument Table for 'Generate_Graph.py'
 
 | Argument            | Type   | Default          | Description                                                        |
 |---------------------|--------|------------|--------------------------------------------------------------------------|
@@ -69,7 +69,7 @@ This script draws a graph of your portfolio versus the S&P 500.
    - Run `ProcessPortfolio.py` at least once so `chatgpt_portfolio_update.csv` has data.
 2. **Run the graph script**
    ```bash
-   python "Start Your Own/Generate_Graph.py" --baseline-equity 100
+   python "Start Your Own/Generate_Graph.py" --start-equity 100
    ```
    
 3. **View the chart**
