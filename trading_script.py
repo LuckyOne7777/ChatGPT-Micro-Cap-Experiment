@@ -203,6 +203,21 @@ def _to_datetime_index(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def _normalize_ohlcv(df: pd.DataFrame) -> pd.DataFrame:
+    # Flatten multiIndex frame so we can lazily lookup values by index.
+    if isinstance(df.columns, pd.MultiIndex):
+        try:
+            # If the second level is the same ticker for all cols, drop it
+            if len(set(df.columns.get_level_values(1))) == 1:
+                df = df.copy()
+                df.columns = df.columns.get_level_values(0)
+            else:
+                # multiple tickers: flatten with join
+                df = df.copy()
+                df.columns = ["_".join(map(str, t)).strip("_") for t in df.columns.to_flat_index()]
+        except Exception:
+            df = df.copy()
+            df.columns = ["_".join(map(str, t)).strip("_") for t in df.columns.to_flat_index()]
+            
     # Ensure all expected columns exist
     for c in ["Open", "High", "Low", "Close", "Volume"]:
         if c not in df.columns:
@@ -214,14 +229,11 @@ def _normalize_ohlcv(df: pd.DataFrame) -> pd.DataFrame:
 
 def _yahoo_download(ticker: str, **kwargs: Any) -> pd.DataFrame:
     """Call yfinance.download with a real UA and silence all chatter."""
-    import io, logging, requests
+    import io, logging
     from contextlib import redirect_stderr, redirect_stdout
 
-    sess = requests.Session()
-    sess.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
     kwargs.setdefault("progress", False)
     kwargs.setdefault("threads", False)
-    kwargs.setdefault("session", sess)
 
     logging.getLogger("yfinance").setLevel(logging.CRITICAL)
     buf = io.StringIO()
