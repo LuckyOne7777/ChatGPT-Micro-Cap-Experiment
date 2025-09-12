@@ -57,6 +57,7 @@ So, starting with just $100, I wanted to answer a simple but powerful question:
 - Performance tracking — CSVs with daily PnL, total equity, and trade history  
 - Visualization tools — Matplotlib graphs comparing ChatGPT vs. Index  
 - Logs & trade data — auto-saved logs for transparency  
+- Comprehensive reporting — Professional financial reports with detailed analysis and visualizations
 
 ## Want to Contribute?
 
@@ -89,6 +90,15 @@ This project is an attempt to find out — with transparency, data, and a real b
 - **Backtesting Support** - ASOF_DATE override for historical analysis
 - **Performance Analytics** - CAPM analysis, Sharpe/Sortino ratios, drawdown metrics
 - **Trade Logging** - Complete transparency with detailed execution logs
+- **Comprehensive Reporting** - Professional financial reports with detailed analysis and visualizations including:
+  - Performance comparison with S&P 500
+  - Daily performance analysis
+  - ROI analysis for all stocks
+  - Portfolio composition analysis
+  - Risk metrics including drawdown analysis
+  - Win/loss analysis
+  - Advanced risk metrics (Sortino ratio, consecutive wins/losses)
+  - Historical reporting capability with --date option
 
 ## System Requirements
 - Python  3.11+
