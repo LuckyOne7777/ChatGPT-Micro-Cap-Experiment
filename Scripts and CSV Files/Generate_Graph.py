@@ -9,6 +9,9 @@ PORTFOLIO_CSV = f"{DATA_DIR}/chatgpt_portfolio_update.csv"
 # Save path in project root
 RESULTS_PATH = Path("Results.png")  # NEW
 
+# Project timeline settings
+PROJECT_END_DATE = pd.Timestamp("2025-12-27")
+ROLLING_WINDOW_DAYS = 180
 
 def load_portfolio_totals() -> pd.DataFrame:
     """Load portfolio equity history including a baseline row."""
@@ -105,21 +108,31 @@ def main() -> dict:
     """Generate and display the comparison graph; return metrics."""
     chatgpt_totals = load_portfolio_totals()
 
-    start_date = pd.Timestamp("2025-06-27")
-    end_date = chatgpt_totals["Date"].max()
-    sp500 = download_sp500(start_date, end_date)
+    first_date = chatgpt_totals["Date"].min()
+    last_date = chatgpt_totals["Date"].max()
+
+    if last_date <= PROJECT_END_DATE:
+        graph_start = first_date
+        graph_end = PROJECT_END_DATE
+    else:
+        graph_end = last_date
+        graph_start = max(first_date, graph_end - pd.Timedelta(days=ROLLING_WINDOW_DAYS))
+
+    sp500 = download_sp500(graph_start, graph_end)
+
+    plot_totals = chatgpt_totals[(chatgpt_totals["Date"] >= graph_start) & (chatgpt_totals["Date"] <= graph_end)]
 
     # metrics
-    largest_start, largest_end, largest_gain = find_largest_gain(chatgpt_totals)
-    dd_date, dd_value, dd_pct = compute_drawdown(chatgpt_totals)
+    largest_start, largest_end, largest_gain = find_largest_gain(plot_totals)
+    dd_date, dd_value, dd_pct = compute_drawdown(plot_totals)
 
     # plotting
     plt.figure(figsize=(10, 6))
     plt.style.use("seaborn-v0_8-whitegrid")
 
     plt.plot(
-        chatgpt_totals["Date"],
-        chatgpt_totals["Total Equity"],
+        plot_totals["Date"],
+        plot_totals["Total Equity"],
         label="ChatGPT ($100 Invested)",
         marker="o",
         color="blue",
@@ -137,7 +150,7 @@ def main() -> dict:
 
     # annotate largest gain
     largest_peak_value = float(
-        chatgpt_totals.loc[chatgpt_totals["Date"] == largest_end, "Total Equity"].iloc[0]
+        plot_totals.loc[plot_totals["Date"] == largest_end, "Total Equity"].iloc[0]
     )
     plt.text(
         largest_end,
@@ -148,9 +161,9 @@ def main() -> dict:
     )
 
     # annotate final P/Ls
-    final_date = chatgpt_totals["Date"].iloc[-1]
-    final_chatgpt = float(chatgpt_totals["Total Equity"].iloc[-1])
-    final_spx = float(sp500["SPX Value ($100 Invested)"].iloc[-1])
+    final_date = plot_totals["Date"].iloc[-1]
+    final_chatgpt = float(plot_totals["Total Equity"].iloc[-1])
+    final_spx = float(sp500.loc[sp500["Date"] == final_date, "SPX Value ($100 Invested)"].iloc[0])
     plt.text(final_date, final_chatgpt + 0.3, f"+{final_chatgpt - 100.0:.1f}%", color="blue", fontsize=9)
     plt.text(final_date, final_spx + 0.9, f"+{final_spx - 100.0:.1f}%", color="orange", fontsize=9)
 
@@ -169,6 +182,7 @@ def main() -> dict:
     plt.xticks(rotation=15)
     plt.legend()
     plt.grid(True)
+    plt.xlim(graph_start, graph_end)
     plt.tight_layout()
 
     # --- Auto-save to project root ---
