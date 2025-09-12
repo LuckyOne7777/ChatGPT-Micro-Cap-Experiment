@@ -19,14 +19,14 @@ save their CSV data inside this folder.
 **Processing Portfolio:**
    ```bash
    # ALWAYS include a CSV file of history
-   python trading_script.py --file "Start Your Own/chatgpt_portfolio_update.csv"
+   python trading_script.py --data-dir "Start Your Own"
    ```
 
 **To Save Prior Days:**
    ```bash
 
    # Save data with specific date
-   python trading_script.py --asof 2025-08-27 --file "Start Your Own/chatgpt_portfolio_update.csv"
+   python trading_script.py --asof 2025-08-27 --data-dir "Start Your Own"
    ```
 
 **Generate performance graphs:**

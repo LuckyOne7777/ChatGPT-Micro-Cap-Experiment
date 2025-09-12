@@ -68,6 +68,20 @@ PORTFOLIO_CSV = DATA_DIR / "chatgpt_portfolio_update.csv"
 TRADE_LOG_CSV = DATA_DIR / "chatgpt_trade_log.csv"
 DEFAULT_BENCHMARKS = ["IWO", "XBI", "SPY", "IWM"]
 
+# Set up logger for this module
+logger = logging.getLogger(__name__)
+
+# Log initial global state configuration (only when run as main script)
+def _log_initial_state():
+    """Log the initial global file path configuration."""
+    logger.info("=== Trading Script Initial Configuration ===")
+    logger.info("Script directory: %s", SCRIPT_DIR)
+    logger.info("Data directory: %s", DATA_DIR)
+    logger.info("Portfolio CSV: %s", PORTFOLIO_CSV)
+    logger.info("Trade log CSV: %s", TRADE_LOG_CSV)
+    logger.info("Default benchmarks: %s", DEFAULT_BENCHMARKS)
+    logger.info("==============================================")
+
 # ------------------------------
 # Configuration helpers — benchmark tickers (tickers.json)
 # ------------------------------
@@ -84,9 +98,13 @@ def _read_json_file(path: Path) -> Optional[Dict]:
     - Other IO errors -> log a warning and return None
     """
     try:
+        logger.info("Reading JSON file: %s", path)
         with path.open("r", encoding="utf-8") as fh:
-            return json.load(fh)
+            result = json.load(fh)
+            logger.info("Successfully read JSON file: %s", path)
+            return result
     except FileNotFoundError:
+        logger.info("JSON file not found: %s", path)
         return None
     except json.JSONDecodeError as exc:
         logger.warning("tickers.json present but malformed: %s -> %s. Falling back to defaults.", path, exc)
@@ -154,9 +172,13 @@ def last_trading_date(today: datetime | None = None) -> pd.Timestamp:
     """Return last trading date (Mon–Fri), mapping Sat/Sun -> Fri."""
     dt = pd.Timestamp(today or _effective_now())
     if dt.weekday() == 5:  # Sat -> Fri
-        return (dt - pd.Timedelta(days=1)).normalize()
+        friday_date = (dt - pd.Timedelta(days=1)).normalize()
+        logger.info("🗓️  Script running on Saturday - using Friday's data (%s) instead of today's date", friday_date.date())
+        return friday_date
     if dt.weekday() == 6:  # Sun -> Fri
-        return (dt - pd.Timedelta(days=2)).normalize()
+        friday_date = (dt - pd.Timedelta(days=2)).normalize()
+        logger.info("🗓️  Script running on Sunday - using Friday's data (%s) instead of today's date", friday_date.date())
+        return friday_date
     return dt.normalize()
 
 def check_weekend() -> str:
@@ -375,10 +397,13 @@ def download_price_data(ticker: str, **kwargs: Any) -> FetchResult:
 
 def set_data_dir(data_dir: Path) -> None:
     global DATA_DIR, PORTFOLIO_CSV, TRADE_LOG_CSV
+    logger.info("Setting data directory: %s", data_dir)
     DATA_DIR = Path(data_dir)
+    logger.debug("Creating data directory if it doesn't exist: %s", DATA_DIR)
     os.makedirs(DATA_DIR, exist_ok=True)
     PORTFOLIO_CSV = DATA_DIR / "chatgpt_portfolio_update.csv"
     TRADE_LOG_CSV = DATA_DIR / "chatgpt_trade_log.csv"
+    logger.info("Data directory configured - Portfolio CSV: %s, Trade Log CSV: %s", PORTFOLIO_CSV, TRADE_LOG_CSV)
 
 
 # ------------------------------
@@ -389,7 +414,12 @@ def _ensure_df(portfolio: pd.DataFrame | dict[str, list[object]] | list[dict[str
     if isinstance(portfolio, pd.DataFrame):
         return portfolio.copy()
     if isinstance(portfolio, (dict, list)):
-        return pd.DataFrame(portfolio)
+        df = pd.DataFrame(portfolio)
+        # Ensure proper columns exist even for empty DataFrames
+        if df.empty:
+            logger.debug("Creating empty portfolio DataFrame with proper column structure")
+            df = pd.DataFrame(columns=["ticker", "shares", "stop_loss", "buy_price", "cost_basis"])
+        return df
     raise TypeError("portfolio must be a DataFrame, dict, or list[dict]")
 
 def process_portfolio(
@@ -459,14 +489,18 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press 
                     }
                     # --- Manual BUY MOO logging ---
                     if os.path.exists(TRADE_LOG_CSV):
+                        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
                         df_log = pd.read_csv(TRADE_LOG_CSV)
+                        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
                         if df_log.empty:
                             df_log = pd.DataFrame([log])
                         else:
                             df_log = pd.concat([df_log, pd.DataFrame([log])], ignore_index=True)
                     else:
                         df_log = pd.DataFrame([log])
+                    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
                     df_log.to_csv(TRADE_LOG_CSV, index=False)
+                    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
 
                     rows = portfolio_df.loc[portfolio_df["ticker"].astype(str).str.upper() == ticker.upper()]
                     if rows.empty:
@@ -603,11 +637,15 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press 
 
     df_out = pd.DataFrame(results)
     if PORTFOLIO_CSV.exists():
+        logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
         existing = pd.read_csv(PORTFOLIO_CSV)
+        logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
         existing = existing[existing["Date"] != str(today_iso)]
         print("Saving results to CSV...")
         df_out = pd.concat([existing, df_out], ignore_index=True)
+    logger.info("Writing CSV file: %s", PORTFOLIO_CSV)
     df_out.to_csv(PORTFOLIO_CSV, index=False)
+    logger.info("Successfully wrote CSV file: %s", PORTFOLIO_CSV)
 
     return portfolio_df, cash
 
@@ -639,14 +677,18 @@ def log_sell(
     portfolio = portfolio[portfolio["ticker"] != ticker]
 
     if TRADE_LOG_CSV.exists():
+        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
         df = pd.read_csv(TRADE_LOG_CSV)
+        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
         if df.empty:
             df = pd.DataFrame([log])
         else:
             df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
+    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
     df.to_csv(TRADE_LOG_CSV, index=False)
+    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
     return portfolio
 
 def log_manual_buy(
@@ -710,14 +752,18 @@ def log_manual_buy(
         "Reason": "MANUAL BUY LIMIT - Filled",
     }
     if os.path.exists(TRADE_LOG_CSV):
+        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
         df = pd.read_csv(TRADE_LOG_CSV)
+        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
         if df.empty:
             df = pd.DataFrame([log])
         else:
             df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
+    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
     df.to_csv(TRADE_LOG_CSV, index=False)
+    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
 
     rows = chatgpt_portfolio.loc[chatgpt_portfolio["ticker"].str.upper() == ticker.upper()]
     if rows.empty:
@@ -819,14 +865,18 @@ If this is a mistake, enter 1, or hit Enter."""
         "Sell Price": exec_price,
     }
     if os.path.exists(TRADE_LOG_CSV):
+        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
         df = pd.read_csv(TRADE_LOG_CSV)
+        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
         if df.empty:
             df = pd.DataFrame([log])
         else:
             df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
+    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
     df.to_csv(TRADE_LOG_CSV, index=False)
+    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
 
 
     if total_shares == shares_sold:
@@ -881,7 +931,9 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
             raise Exception(f"Download for {ticker} failed. {e} Try checking internet connection.")
 
     # Read portfolio history
+    logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
     chatgpt_df = pd.read_csv(PORTFOLIO_CSV)
+    logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
 
     # Use only TOTAL rows, sorted by date
     totals = chatgpt_df[chatgpt_df["Ticker"] == "TOTAL"].copy()
@@ -1089,11 +1141,11 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
 # Orchestration
 # ------------------------------
 
-def load_latest_portfolio_state(
-    file: str,
-) -> tuple[pd.DataFrame | list[dict[str, Any]], float]:
-    """Load the most recent portfolio snapshot and cash balance."""
-    df = pd.read_csv(file)
+def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], float]:
+    """Load the most recent portfolio snapshot and cash balance from global PORTFOLIO_CSV."""
+    logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
+    df = pd.read_csv(PORTFOLIO_CSV)
+    logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
     if df.empty:
         portfolio = pd.DataFrame(columns=["ticker", "shares", "stop_loss", "buy_price", "cost_basis"])
         print("Portfolio CSV is empty. Returning set amount of cash for creating portfolio.")
@@ -1144,13 +1196,12 @@ def load_latest_portfolio_state(
     return latest_tickers, cash
 
 
-def main(file: str, data_dir: Path | None = None) -> None:
+def main(data_dir: Path | None = None) -> None:
     """Check versions, then run the trading script."""
-    chatgpt_portfolio, cash = load_latest_portfolio_state(file)
-    print(file)
     if data_dir is not None:
         set_data_dir(data_dir)
-
+    
+    chatgpt_portfolio, cash = load_latest_portfolio_state()
     chatgpt_portfolio, cash = process_portfolio(chatgpt_portfolio, cash)
     daily_results(chatgpt_portfolio, cash)
 
@@ -1158,19 +1209,26 @@ def main(file: str, data_dir: Path | None = None) -> None:
 if __name__ == "__main__":
     import argparse
 
-    # Default CSV path resolution (keep your existing logic)
-    csv_path = PORTFOLIO_CSV if PORTFOLIO_CSV.exists() else (SCRIPT_DIR / "chatgpt_portfolio_update.csv")
-
     parser = argparse.ArgumentParser()
-    parser.add_argument("--file", default=str(csv_path), help="Path to chatgpt_portfolio_update.csv")
     parser.add_argument("--data-dir", default=None, help="Optional data directory")
     parser.add_argument("--asof", default=None, help="Treat this YYYY-MM-DD as 'today' (e.g., 2025-08-27)")
+    parser.add_argument("--log-level", default="INFO", 
+                       choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+                       help="Set the logging level (default: INFO)")
     args = parser.parse_args()
+
+    
+    # Configure logging level
+    logging.basicConfig(
+        level=getattr(logging, args.log_level.upper()),
+        format='🔥 %(asctime)s - %(filename)s:%(lineno)d - %(levelname)s - %(message)s'
+    )
+
+    # Log initial global state and command-line arguments
+    _log_initial_state()
+    logger.info("Script started with arguments: %s", vars(args))
 
     if args.asof:
         set_asof(args.asof)
 
-    if not Path(args.file).exists():
-        print("No portfolio CSV found. Create one or run main() with your file path.")
-    else:
-        main(args.file, Path(args.data_dir) if args.data_dir else None)
+    main(Path(args.data_dir) if args.data_dir else None)
