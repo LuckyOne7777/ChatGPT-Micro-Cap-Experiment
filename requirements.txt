@@ -2,3 +2,4 @@ numpy==2.3.2
 pandas==2.2.2
 yfinance==0.2.65
 matplotlib==3.8.4
+python-dotenv==1.1.1

@@ -27,6 +27,12 @@ try:
     HAS_OPENAI = True
 except ImportError:
     HAS_OPENAI = False
+    
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # nosec: loads .env into process env if present
+except Exception:
+    pass
 
 
 def generate_trading_prompt(portfolio_df: pd.DataFrame, cash: float, total_equity: float) -> str:

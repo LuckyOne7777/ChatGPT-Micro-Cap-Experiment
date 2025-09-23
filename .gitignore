@@ -2,3 +2,5 @@ CLAUDE.md
 venv
 .idea
 __pycache__
+.env
+.vscode
