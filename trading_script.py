@@ -29,6 +29,11 @@ import yfinance as yf
 import json
 import logging
 
+from decimal import Decimal, InvalidOperation
+import re
+import sys
+
+
 # Optional pandas-datareader import for Stooq access
 try:
     import pandas_datareader.data as pdr
@@ -162,6 +167,40 @@ def load_benchmarks(script_dir: Path | None = None) -> List[str]:
             result.append(up)
 
     return result if result else DEFAULT_BENCHMARKS.copy()
+
+
+
+# ------------------------------
+# Equity parsing helper (CLI override)
+# ------------------------------
+def _normalize_number_string(s: str) -> str:
+    """Remove commas/underscores/spaces and optional leading $; preserve scientific notation."""
+    s = str(s).strip()
+    if s.startswith("$"):
+        s = s[1:]
+    # remove commas, underscores, spaces
+    s = re.sub(r"[,_\s]", "", s)
+    return s
+
+def parse_starting_equity(s: Union[str, float, Decimal]) -> Optional[Decimal]:
+    """Return Decimal if s represents a positive number, otherwise None."""
+    if isinstance(s, (float, Decimal)):
+        try:
+            d = Decimal(str(s))
+        except Exception:
+            return None
+    else:
+        try:
+            norm = _normalize_number_string(str(s))
+            if norm == "":
+                return None
+            d = Decimal(norm)
+        except (InvalidOperation, ValueError):
+            return None
+    if d <= 0:
+        return None
+    return d
+
 
 
 # ------------------------------
@@ -655,13 +694,33 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press 
     results.append(total_row)
 
     df_out = pd.DataFrame(results)
+    
+      # --- Safely append to existing portfolio CSV (avoid FutureWarning on concat) ---
     if PORTFOLIO_CSV.exists():
         logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
         existing = pd.read_csv(PORTFOLIO_CSV)
         logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
+
+        # Remove any rows for today's date so we don't duplicate
         existing = existing[existing["Date"] != str(today_iso)]
+
         print("Saving results to CSV...")
-        df_out = pd.concat([existing, df_out], ignore_index=True)
+
+        if existing.empty:
+            # Nothing to preserve — write the new results directly
+            combined = df_out
+        else:
+            # Ensure columns line up to avoid dtype/column-order surprises
+            try:
+                existing = existing.reindex(columns=df_out.columns)
+            except Exception:
+                # Fall back to best-effort concat if reindexing fails
+                logger.debug("Reindexing existing CSV to match df_out columns failed; falling back to concat with sort=False")
+            combined = pd.concat([existing, df_out], ignore_index=True, sort=False)
+    else:
+        combined = df_out
+
+
     logger.info("Writing CSV file: %s", PORTFOLIO_CSV)
     df_out.to_csv(PORTFOLIO_CSV, index=False)
     logger.info("Successfully wrote CSV file: %s", PORTFOLIO_CSV)
@@ -1160,8 +1219,16 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
 # Orchestration
 # ------------------------------
 
-def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], float]:
-    """Load the most recent portfolio snapshot and cash balance from global PORTFOLIO_CSV."""
+def load_latest_portfolio_state(
+    starting_equity_override: Optional[Union[str, float, Decimal]] = None,
+) -> tuple[pd.DataFrame | list[dict[str, Any]], float]:
+    """Load the most recent portfolio snapshot and cash balance from global PORTFOLIO_CSV.
+    
+     If the portfolio CSV is empty, this function will:
+      - Use `starting_equity_override` if provided (validated), or
+      - Prompt interactively for a starting cash amount (if stdin is interactive), or
+      - Exit with code 2 if stdin is not interactive and no override provided
+    """
     logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
     try:
         df = pd.read_csv(PORTFOLIO_CSV)
@@ -1178,13 +1245,31 @@ def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], 
     if df.empty:
         portfolio = pd.DataFrame(columns=["ticker", "shares", "stop_loss", "buy_price", "cost_basis"])
         print("Portfolio CSV is empty. Returning set amount of cash for creating portfolio.")
-        try:
-            cash = float(input("What would you like your starting cash amount to be? "))
-        except ValueError:
-            raise ValueError(
-                "Cash could not be converted to float datatype. Please enter a valid number."
-            )
+         
+         
+        # 0) If override provided, validate and use it
+        if starting_equity_override is not None:
+            parsed = parse_starting_equity(starting_equity_override)
+            if parsed is None:
+                raise ValueError("Provided starting equity is invalid. Please pass a positive number.")
+            return portfolio, float(parsed)
+
+        # 1) No override: if stdin not interactive, exit gracefully (no hanging)
+        if not sys.stdin.isatty():
+            print("Error: No starting equity provided and stdin is not interactive. Provide --starting-equity or run interactively.")
+            sys.exit(2)
+
+        # 2) Interactive prompt until valid
+        while True:
+            raw = input("What would you like your starting cash amount to be? ").strip()
+            parsed = parse_starting_equity(raw)
+            if parsed is not None:
+                cash = float(parsed)
+                break
+            print("Invalid amount. Enter a positive number (commas, underscores, $ prefix allowed). Try again.")
+
         return portfolio, cash
+
 
     non_total = df[df["Ticker"] != "TOTAL"].copy()
     non_total["Date"] = pd.to_datetime(non_total["Date"], format="mixed", errors="coerce")
@@ -1225,12 +1310,12 @@ def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], 
     return latest_tickers, cash
 
 
-def main(data_dir: Path | None = None) -> None:
+def main(data_dir: Path | None = None, starting_equity_override: Optional[Union[str, float, Decimal]] = None) -> None:
     """Check versions, then run the trading script."""
     if data_dir is not None:
         set_data_dir(data_dir)
     
-    chatgpt_portfolio, cash = load_latest_portfolio_state()
+    chatgpt_portfolio, cash = load_latest_portfolio_state(starting_equity_override=starting_equity_override)
     chatgpt_portfolio, cash = process_portfolio(chatgpt_portfolio, cash)
     daily_results(chatgpt_portfolio, cash)
 
@@ -1244,6 +1329,8 @@ if __name__ == "__main__":
     parser.add_argument("--log-level", default="INFO", 
                        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
                        help="Set the logging level (default: INFO)")
+    parser.add_argument("--starting-equity", "-s", default=None,
+                       help="Optional starting equity (e.g. 10000 or $10,000.50). If not provided, script will prompt when needed.")
     args = parser.parse_args()
 
     
@@ -1260,4 +1347,4 @@ if __name__ == "__main__":
     if args.asof:
         set_asof(args.asof)
 
-    main(Path(args.data_dir) if args.data_dir else None)
+    main(Path(args.data_dir) if args.data_dir else None, starting_equity_override=args.starting_equity)
