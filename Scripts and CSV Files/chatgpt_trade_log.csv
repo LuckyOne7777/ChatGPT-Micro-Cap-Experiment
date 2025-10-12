@@ -1,4 +1,7 @@
 Date,Ticker,Shares Bought,Buy Price,Cost Basis,PnL,Reason,Shares Sold,Sell Price
+2025-06-30,CSAI,15.0,1.9,28.5,0.0,RESTORED - Initial purchase reconstructed from portfolio data,,
+2025-06-30,CADL,5.0,5.04,25.2,0.0,RESTORED - Initial purchase reconstructed from portfolio data,,
+2025-06-30,ABEO,6.0,5.77,34.62,0.0,RESTORED - Initial purchase reconstructed from portfolio data,,
 2025-07-07,AZTR,55.0,0.25,13.75,0.0,MANUAL BUY - New position,,
 2025-07-07,CSAI,,,1.9,5.7,MANUAL SELL - Rotated into AZTR,15.0,2.28
 2025-07-08,IINN,20.0,1.5,30.0,0.0,MANUAL BUY - New position,,
