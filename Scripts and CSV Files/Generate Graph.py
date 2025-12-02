@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import yfinance as yf
-from pathlib import Path  # NEW
+import yfinance as yf # type: ignore
+from pathlib import Path
 
 DATA_DIR = "Scripts and CSV Files"
-PORTFOLIO_CSV = f"{DATA_DIR}/chatgpt_portfolio_update.csv"
+PORTFOLIO_CSV = f"{DATA_DIR}/Daily Updates.csv"
 
 # Save path in project root
-RESULTS_PATH = Path("Results.png")  # NEW
+RESULTS_PATH = Path("Results.png")
 
 
 def load_portfolio_totals() -> pd.DataFrame:
@@ -27,19 +27,23 @@ def load_portfolio_totals() -> pd.DataFrame:
     out = out.drop_duplicates(subset=["Date"], keep="last").reset_index(drop=True)
     return out
 
+def download_baseline(ticker: str, start_date: pd.Timestamp, end_date: pd.Timestamp, starting_capital: float = 100) -> pd.DataFrame:
+    """Download prices and normalise to a $100 baseline."""
 
-def download_sp500(start_date: pd.Timestamp, end_date: pd.Timestamp) -> pd.DataFrame:
-    """Download S&P 500 prices and normalise to a $100 baseline (at 2025-06-27 close=6173.07)."""
-    sp500 = yf.download("^SPX", start=start_date, end=end_date + pd.Timedelta(days=1),
+    baseline = yf.download(ticker, start=start_date, end=end_date + pd.Timedelta(days=1),
                         progress=False, auto_adjust=True)
-    sp500 = sp500.reset_index()
-    if isinstance(sp500.columns, pd.MultiIndex):
-        sp500.columns = sp500.columns.get_level_values(0)
+    baseline = baseline.reset_index()
+    if isinstance(baseline.columns, pd.MultiIndex):
+        baseline.columns = baseline.columns.get_level_values(0)
 
-    spx_27_price = 6173.07  # 2025-06-27 close (baseline)
-    scaling_factor = 100.0 / spx_27_price
-    sp500["SPX Value ($100 Invested)"] = sp500["Close"] * scaling_factor
-    return sp500[["Date", "SPX Value ($100 Invested)"]]
+    starting_price_data = yf.download(ticker, start=start_date, end= start_date + pd.Timedelta(days=1), auto_adjust=True, progress=False)
+    if isinstance(starting_price_data.columns, pd.MultiIndex):
+        starting_price_data.columns = starting_price_data.columns.droplevel(1)
+    starting_price = starting_price_data.loc[starting_price_data.index[0], "Close"]
+
+    scaling_factor = starting_capital / starting_price
+    baseline["Adjusted Value"] = baseline["Close"] * scaling_factor
+    return baseline[["Date", "Adjusted Value"]]
 
 
 def find_largest_gain(df: pd.DataFrame) -> tuple[pd.Timestamp, pd.Timestamp, float]:
@@ -107,7 +111,8 @@ def main() -> dict:
 
     start_date = pd.Timestamp("2025-06-27")
     end_date = chatgpt_totals["Date"].max()
-    sp500 = download_sp500(start_date, end_date)
+    sp500 = download_baseline("^SPX", start_date, end_date)
+    russell = download_baseline("^RUT", start_date, end_date)
 
     # metrics
     largest_start, largest_end, largest_gain = find_largest_gain(chatgpt_totals)
@@ -127,10 +132,19 @@ def main() -> dict:
     )
     plt.plot(
         sp500["Date"],
-        sp500["SPX Value ($100 Invested)"],
+        sp500["Adjusted Value"],
         label="S&P 500 ($100 Invested)",
         marker="o",
         color="orange",
+        linestyle="--",
+        linewidth=2,
+    )
+    plt.plot(
+        russell["Date"],
+        russell["Adjusted Value"],
+        label="Russell 2K ($100 Invested)",
+        marker="o",
+        color="Green",
         linestyle="--",
         linewidth=2,
     )
@@ -141,7 +155,7 @@ def main() -> dict:
     )
     plt.text(
         largest_end,
-        largest_peak_value + 0.3,
+        largest_peak_value + 2.2,
         f"+{largest_gain:.1f}% largest gain",
         color="green",
         fontsize=9,
@@ -150,20 +164,31 @@ def main() -> dict:
     # annotate final P/Ls
     final_date = chatgpt_totals["Date"].iloc[-1]
     final_chatgpt = float(chatgpt_totals["Total Equity"].iloc[-1])
-    final_spx = float(sp500["SPX Value ($100 Invested)"].iloc[-1])
+    final_spx = float(sp500["Adjusted Value"].iloc[-1])
+    final_rut = float(russell["Adjusted Value"].iloc[-1])
     plt.text(final_date, final_chatgpt + 0.5, f"{final_chatgpt - 100.0:.1f}%", color="blue", fontsize=9)
     plt.text(final_date, final_spx + 0.9, f"+{final_spx - 100.0:.1f}%", color="orange", fontsize=9)
+    plt.text(final_date, final_rut + 0.9, f"+{final_rut - 100.0:.1f}%", color="green", fontsize=9)
 
+    # label ATYR's catalyst failure
+    plt.text(
+
+        pd.to_datetime("2025-09-13") + pd.Timedelta(days=0.5),
+        125,
+        f"ATYR falls ~80%",
+        color="red",
+        fontsize=9,
+    )
     # annotate max drawdown
     plt.text(
-        dd_date + pd.Timedelta(days=0.5),
-        dd_value - 0.5,
+        dd_date,
+        dd_value + 5,
         f"{dd_pct:.1f}%",
         color="red",
         fontsize=9,
     )
 
-    plt.title("ChatGPT's Micro Cap Portfolio vs. S&P 500")
+    plt.title("ChatGPT's Micro Cap Portfolio vs. S&P 500 vs Russell 2000")
     plt.xlabel("Date")
     plt.ylabel("Value of $100 Investment")
     plt.xticks(rotation=15)

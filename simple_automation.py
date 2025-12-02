@@ -19,7 +19,7 @@ import pandas as pd
 # Import existing trading functions
 from trading_script import (
     process_portfolio, daily_results, load_latest_portfolio_state,
-    set_data_dir, PORTFOLIO_CSV, TRADE_LOG_CSV, last_trading_date
+    set_data_dir, PORTFOLIO_CSV_PATH, TRADE_LOG_CSV_PATH, last_trading_date
 )
 
 try:

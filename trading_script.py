@@ -17,7 +17,7 @@ Notes:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any, cast,Dict, List, Optional
 import os
@@ -25,9 +25,14 @@ import warnings
 
 import numpy as np
 import pandas as pd
-import yfinance as yf
+import yfinance as yf # type: ignore
 import json
 import logging
+
+from decimal import Decimal, InvalidOperation
+import re
+import sys
+
 
 # Optional pandas-datareader import for Stooq access
 try:
@@ -64,8 +69,11 @@ def _effective_now() -> datetime:
 # ------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
 DATA_DIR = SCRIPT_DIR  # Save files alongside this script by default
-PORTFOLIO_CSV = DATA_DIR / "chatgpt_portfolio_update.csv"
-TRADE_LOG_CSV = DATA_DIR / "chatgpt_trade_log.csv"
+PORTFOLIO_CSV_FILE = "Daily Updates.csv"
+TRADE_LOG_CSV_FILE = "Trade Log.csv"
+
+PORTFOLIO_CSV_PATH = DATA_DIR / PORTFOLIO_CSV_FILE
+TRADE_LOG_CSV_PATH = DATA_DIR / TRADE_LOG_CSV_FILE
 DEFAULT_BENCHMARKS = ["IWO", "XBI", "SPY", "IWM"]
 
 # Set up logger for this module
@@ -77,8 +85,8 @@ def _log_initial_state():
     logger.info("=== Trading Script Initial Configuration ===")
     logger.info("Script directory: %s", SCRIPT_DIR)
     logger.info("Data directory: %s", DATA_DIR)
-    logger.info("Portfolio CSV: %s", PORTFOLIO_CSV)
-    logger.info("Trade log CSV: %s", TRADE_LOG_CSV)
+    logger.info("Portfolio CSV: %s", PORTFOLIO_CSV_PATH)
+    logger.info("Trade log CSV: %s", TRADE_LOG_CSV_PATH)
     logger.info("Default benchmarks: %s", DEFAULT_BENCHMARKS)
     logger.info("==============================================")
 
@@ -164,6 +172,40 @@ def load_benchmarks(script_dir: Path | None = None) -> List[str]:
     return result if result else DEFAULT_BENCHMARKS.copy()
 
 
+
+# ------------------------------
+# Equity parsing helper (CLI override)
+# ------------------------------
+def _normalize_number_string(s: str) -> str:
+    """Remove commas/underscores/spaces and optional leading $; preserve scientific notation."""
+    s = str(s).strip()
+    if s.startswith("$"):
+        s = s[1:]
+    # remove commas, underscores, spaces
+    s = re.sub(r"[,_\s]", "", s)
+    return s
+
+def parse_starting_equity(s: Union[str, float, Decimal]) -> Optional[Decimal]:
+    """Return Decimal if s represents a positive number, otherwise None."""
+    if isinstance(s, (float, Decimal)):
+        try:
+            d = Decimal(str(s))
+        except Exception:
+            return None
+    else:
+        try:
+            norm = _normalize_number_string(str(s))
+            if norm == "":
+                return None
+            d = Decimal(norm)
+        except (InvalidOperation, ValueError):
+            return None
+    if d <= 0:
+        return None
+    return d
+
+
+
 # ------------------------------
 # Date helpers
 # ------------------------------
@@ -173,11 +215,11 @@ def last_trading_date(today: datetime | None = None) -> pd.Timestamp:
     dt = pd.Timestamp(today or _effective_now())
     if dt.weekday() == 5:  # Sat -> Fri
         friday_date = (dt - pd.Timedelta(days=1)).normalize()
-        logger.info("🗓️  Script running on Saturday - using Friday's data (%s) instead of today's date", friday_date.date())
+        logger.info("Script running on Saturday - using Friday's data (%s) instead of today's date", friday_date.date())
         return friday_date
     if dt.weekday() == 6:  # Sun -> Fri
         friday_date = (dt - pd.Timedelta(days=2)).normalize()
-        logger.info("🗓️  Script running on Sunday - using Friday's data (%s) instead of today's date", friday_date.date())
+        logger.info("Script running on Sunday - using Friday's data (%s) instead of today's date", friday_date.date())
         return friday_date
     return dt.normalize()
 
@@ -264,6 +306,7 @@ def _yahoo_download(ticker: str, **kwargs: Any) -> pd.DataFrame:
         try:
             with redirect_stdout(buf), redirect_stderr(buf):
                 df = cast(pd.DataFrame, yf.download(ticker, **kwargs))
+                
         except Exception:
             return pd.DataFrame()
     return df if isinstance(df, pd.DataFrame) else pd.DataFrame()
@@ -377,17 +420,26 @@ def download_price_data(ticker: str, **kwargs: Any) -> FetchResult:
     # ---------- 1) Yahoo (date-bounded) ----------
     df_y = _yahoo_download(ticker, start=s, end=e, **kwargs)
     if isinstance(df_y, pd.DataFrame) and not df_y.empty:
+        logger.info(f"Successfully retrieved {ticker} data from YahooFinance")
         return FetchResult(_normalize_ohlcv(_to_datetime_index(df_y)), "yahoo")
+    else:
+        logger.warning(f"Yahoo download failed for {ticker}. Trying Stooq...")
 
     # ---------- 2) Stooq via pandas-datareader ----------
     df_s = _stooq_download(ticker, start=s, end=e)
     if isinstance(df_s, pd.DataFrame) and not df_s.empty:
+        logger.info(f"Successfully retrieved {ticker} data from Stooq")
         return FetchResult(_normalize_ohlcv(_to_datetime_index(df_s)), "stooq-pdr")
+    else:
+        logger.warning(f"Stooq download failed for {ticker}. Trying direct CSV download...")
 
     # ---------- 3) Stooq direct CSV ----------
     df_csv = _stooq_csv_download(ticker, s, e)
     if isinstance(df_csv, pd.DataFrame) and not df_csv.empty:
+        logger.info(f"Successfully retrieved {ticker} data from CSV")
         return FetchResult(_normalize_ohlcv(_to_datetime_index(df_csv)), "stooq-csv")
+    else:
+        logger.warning(f"All sources failed to get {ticker}'s data")
 
     # ---------- 4) Proxy indices if applicable ----------
     proxy_map = {"^GSPC": "SPY", "^RUT": "IWM"}
@@ -396,6 +448,7 @@ def download_price_data(ticker: str, **kwargs: Any) -> FetchResult:
         df_proxy = _yahoo_download(proxy, start=s, end=e, **kwargs)
         if isinstance(df_proxy, pd.DataFrame) and not df_proxy.empty:
             return FetchResult(_normalize_ohlcv(_to_datetime_index(df_proxy)), f"yahoo:{proxy}-proxy")
+    
 
     # ---------- Nothing worked ----------
     empty = pd.DataFrame(columns=["Open", "High", "Low", "Close", "Adj Close", "Volume"])
@@ -408,14 +461,14 @@ def download_price_data(ticker: str, **kwargs: Any) -> FetchResult:
 # ------------------------------
 
 def set_data_dir(data_dir: Path) -> None:
-    global DATA_DIR, PORTFOLIO_CSV, TRADE_LOG_CSV
+    global DATA_DIR, PORTFOLIO_CSV_PATH, TRADE_LOG_CSV_PATH
     logger.info("Setting data directory: %s", data_dir)
     DATA_DIR = Path(data_dir)
     logger.debug("Creating data directory if it doesn't exist: %s", DATA_DIR)
     os.makedirs(DATA_DIR, exist_ok=True)
-    PORTFOLIO_CSV = DATA_DIR / "chatgpt_portfolio_update.csv"
-    TRADE_LOG_CSV = DATA_DIR / "chatgpt_trade_log.csv"
-    logger.info("Data directory configured - Portfolio CSV: %s, Trade Log CSV: %s", PORTFOLIO_CSV, TRADE_LOG_CSV)
+    PORTFOLIO_CSV_PATH = DATA_DIR /PORTFOLIO_CSV_FILE
+    TRADE_LOG_CSV_PATH = DATA_DIR / TRADE_LOG_CSV_FILE
+    logger.info("Data directory configured - Portfolio CSV: %s, Trade Log CSV: %s", PORTFOLIO_CSV_PATH, TRADE_LOG_CSV_PATH)
 
 
 # ------------------------------
@@ -452,9 +505,24 @@ def process_portfolio(
             print(portfolio_df)
             action = input(
                 f""" You have {cash} in cash.
-Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press Enter to continue: """
+Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, "u" to update a stoploss, or press Enter to continue: """
             ).strip().lower()
+            if action == "u":
+                ticker = input("Enter ticker symbol: ").strip().upper()
+                if ticker not in portfolio_df["ticker"].values:
+                    print(f"{ticker} not found in portfolio.")
+                    continue
+                else:
+                    try:
+                        new_stoploss = float(input("What is your new stoploss? ").strip())
+                    except Exception as e:
+                        print(f"error when processing stoploss: {e}")
+                        continue
 
+                    portfolio_df.loc[portfolio_df["ticker"] == ticker, "stop_loss"] = new_stoploss
+                    print(f"Stoploss for {ticker} is now updated to {new_stoploss}.")
+                    continue
+                     
             if action == "b":
                 ticker = input("Enter ticker symbol: ").strip().upper()
                 order_type = input("Order type? 'm' = market-on-open, 'l' = limit: ").strip().lower()
@@ -500,19 +568,19 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press 
                         "Reason": "MANUAL BUY MOO - Filled",
                     }
                     # --- Manual BUY MOO logging ---
-                    if os.path.exists(TRADE_LOG_CSV):
-                        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
-                        df_log = pd.read_csv(TRADE_LOG_CSV)
-                        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
+                    if os.path.exists(TRADE_LOG_CSV_PATH):
+                        logger.info("Reading CSV file: %s", TRADE_LOG_CSV_PATH)
+                        df_log = pd.read_csv(TRADE_LOG_CSV_PATH)
+                        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV_PATH)
                         if df_log.empty:
                             df_log = pd.DataFrame([log])
                         else:
                             df_log = pd.concat([df_log, pd.DataFrame([log])], ignore_index=True)
                     else:
                         df_log = pd.DataFrame([log])
-                    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
-                    df_log.to_csv(TRADE_LOG_CSV, index=False)
-                    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
+                    logger.info("Writing CSV file: %s", TRADE_LOG_CSV_PATH)
+                    df_log.to_csv(TRADE_LOG_CSV_PATH, index=False)
+                    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV_PATH)
 
                     rows = portfolio_df.loc[portfolio_df["ticker"].astype(str).str.upper() == ticker.upper()]
                     if rows.empty:
@@ -564,8 +632,18 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press 
             if action == "s":
                 try:
                     ticker = input("Enter ticker symbol: ").strip().upper()
-                    shares = float(input("Enter number of shares to sell (LIMIT): "))
-                    sell_price = float(input("Enter sell LIMIT price: "))
+                    if ticker not in portfolio_df["ticker"].values:
+                        print(f"Manual sell for {ticker} failed: ticker not in portfolio.")
+                        continue
+                    sell_order_type = input("Order type? 'm' = market-on-open, 'l' = limit: ").strip().lower()
+                    shares = float(input("Enter number of shares to sell: "))
+                    if sell_order_type == 'l':
+                        sell_price = float(input("Enter sell LIMIT price: "))
+                    elif sell_order_type == 'm':
+                        sell_price = o
+                    else:
+                        print("Unknown order type. Use 'm' or 'l'.")
+                        continue
                     if shares <= 0 or sell_price <= 0:
                         raise ValueError
                 except ValueError:
@@ -648,16 +726,36 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, or press 
     results.append(total_row)
 
     df_out = pd.DataFrame(results)
-    if PORTFOLIO_CSV.exists():
-        logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
-        existing = pd.read_csv(PORTFOLIO_CSV)
-        logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
+    
+      # --- Safely append to existing portfolio CSV (avoid FutureWarning on concat) ---
+    if PORTFOLIO_CSV_PATH.exists():
+        logger.info("Reading CSV file: %s", PORTFOLIO_CSV_PATH)
+        existing = pd.read_csv(PORTFOLIO_CSV_PATH)
+        logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV_PATH)
+
+        # Remove any rows for today's date so we don't duplicate
         existing = existing[existing["Date"] != str(today_iso)]
+
         print("Saving results to CSV...")
-        df_out = pd.concat([existing, df_out], ignore_index=True)
-    logger.info("Writing CSV file: %s", PORTFOLIO_CSV)
-    df_out.to_csv(PORTFOLIO_CSV, index=False)
-    logger.info("Successfully wrote CSV file: %s", PORTFOLIO_CSV)
+
+        if existing.empty:
+            # Nothing to preserve — write the new results directly
+            combined = df_out
+        else:
+            # Ensure columns line up to avoid dtype/column-order surprises
+            try:
+                existing = existing.reindex(columns=df_out.columns)
+            except Exception:
+                # Fall back to best-effort concat if reindexing fails
+                logger.debug("Reindexing existing CSV to match df_out columns failed; falling back to concat with sort=False")
+            combined = pd.concat([existing, df_out], ignore_index=True, sort=False)
+    else:
+        combined = df_out
+
+
+    logger.info("Writing CSV file: %s", PORTFOLIO_CSV_PATH)
+    combined.to_csv(PORTFOLIO_CSV_PATH, index=False)
+    logger.info("Successfully wrote CSV file: %s", PORTFOLIO_CSV_PATH)
 
     return portfolio_df, cash
 
@@ -688,19 +786,19 @@ def log_sell(
     print(f"{ticker} stop loss was met. Selling all shares.")
     portfolio = portfolio[portfolio["ticker"] != ticker]
 
-    if TRADE_LOG_CSV.exists():
-        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
-        df = pd.read_csv(TRADE_LOG_CSV)
-        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
+    if TRADE_LOG_CSV_PATH.exists():
+        logger.info("Reading CSV file: %s", TRADE_LOG_CSV_PATH)
+        df = pd.read_csv(TRADE_LOG_CSV_PATH)
+        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV_PATH)
         if df.empty:
             df = pd.DataFrame([log])
         else:
             df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
-    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
-    df.to_csv(TRADE_LOG_CSV, index=False)
-    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
+    logger.info("Writing CSV file: %s", TRADE_LOG_CSV_PATH)
+    df.to_csv(TRADE_LOG_CSV_PATH, index=False)
+    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV_PATH)
     return portfolio
 
 def log_manual_buy(
@@ -763,19 +861,19 @@ def log_manual_buy(
         "PnL": 0.0,
         "Reason": "MANUAL BUY LIMIT - Filled",
     }
-    if os.path.exists(TRADE_LOG_CSV):
-        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
-        df = pd.read_csv(TRADE_LOG_CSV)
-        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
+    if os.path.exists(TRADE_LOG_CSV_PATH):
+        logger.info("Reading CSV file: %s", TRADE_LOG_CSV_PATH)
+        df = pd.read_csv(TRADE_LOG_CSV_PATH)
+        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV_PATH)
         if df.empty:
             df = pd.DataFrame([log])
         else:
             df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
-    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
-    df.to_csv(TRADE_LOG_CSV, index=False)
-    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
+    logger.info("Writing CSV file: %s", TRADE_LOG_CSV_PATH)
+    df.to_csv(TRADE_LOG_CSV_PATH, index=False)
+    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV_PATH)
 
     rows = chatgpt_portfolio.loc[chatgpt_portfolio["ticker"].str.upper() == ticker.upper()]
     if rows.empty:
@@ -826,18 +924,13 @@ def log_manual_sell(
     if interactive:
         reason = input(
             f"""You are placing a SELL LIMIT for {shares_sold} {ticker} at ${sell_price:.2f}.
-If this is a mistake, enter 1, or hit Enter."""
+If this is a mistake, enter 1, or hit Enter to confirm."""
         )
     if reason == "1":
         print("Returning...")
         return cash, chatgpt_portfolio
     elif reason is None:
         reason = ""
-
-    if ticker not in chatgpt_portfolio["ticker"].values:
-        print(f"Manual sell for {ticker} failed: ticker not in portfolio.")
-        return cash, chatgpt_portfolio
-
     ticker_row = chatgpt_portfolio[chatgpt_portfolio["ticker"] == ticker]
     total_shares = int(ticker_row["shares"].item())
     if shares_sold > total_shares:
@@ -876,19 +969,19 @@ If this is a mistake, enter 1, or hit Enter."""
         "Reason": f"MANUAL SELL LIMIT - {reason}", "Shares Sold": shares_sold,
         "Sell Price": exec_price,
     }
-    if os.path.exists(TRADE_LOG_CSV):
-        logger.info("Reading CSV file: %s", TRADE_LOG_CSV)
-        df = pd.read_csv(TRADE_LOG_CSV)
-        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV)
+    if os.path.exists(TRADE_LOG_CSV_PATH):
+        logger.info("Reading CSV file: %s", TRADE_LOG_CSV_PATH)
+        df = pd.read_csv(TRADE_LOG_CSV_PATH)
+        logger.info("Successfully read CSV file: %s", TRADE_LOG_CSV_PATH)
         if df.empty:
             df = pd.DataFrame([log])
         else:
             df = pd.concat([df, pd.DataFrame([log])], ignore_index=True)
     else:
         df = pd.DataFrame([log])
-    logger.info("Writing CSV file: %s", TRADE_LOG_CSV)
-    df.to_csv(TRADE_LOG_CSV, index=False)
-    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV)
+    logger.info("Writing CSV file: %s", TRADE_LOG_CSV_PATH)
+    df.to_csv(TRADE_LOG_CSV_PATH, index=False)
+    logger.info("Successfully wrote CSV file: %s", TRADE_LOG_CSV_PATH)
 
 
     if total_shares == shares_sold:
@@ -943,9 +1036,9 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
             raise Exception(f"Download for {ticker} failed. {e} Try checking internet connection.")
 
     # Read portfolio history
-    logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
-    chatgpt_df = pd.read_csv(PORTFOLIO_CSV)
-    logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
+    logger.info("Reading CSV file: %s", PORTFOLIO_CSV_PATH)
+    chatgpt_df = pd.read_csv(PORTFOLIO_CSV_PATH)
+    logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV_PATH)
 
     # Use only TOTAL rows, sorted by date
     totals = chatgpt_df[chatgpt_df["Ticker"] == "TOTAL"].copy()
@@ -1136,7 +1229,41 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
     print(f"{'Cash Balance:':32} ${cash:>14,.2f}")
 
     print("\n[ Holdings ]")
-    print(chatgpt_portfolio)
+    new_portfolio_state, cash = load_latest_portfolio_state()
+    new_portfolio_state = pd.DataFrame(new_portfolio_state)
+    print(new_portfolio_state)
+    
+    # Add volume-based liquidity warnings (research: J.Financial Markets 2019)
+    # Micro-caps with <50% avg volume have 3x higher slippage
+    print("\n[ Liquidity Warnings ]")
+    warnings_found = False
+    for row in rows:
+        ticker_str = str(row[0])
+        # Skip benchmarks, only check portfolio holdings
+        if ticker_str not in [str(s["ticker"]).upper() for s in portfolio_dict]:
+            continue
+        
+        # Parse current volume from existing data (avoid extra API call)
+        try:
+            vol_str = row[3].replace(',', '')  # Remove commas from formatted number
+            if vol_str != '—':
+                current_vol = float(vol_str)
+                # Simple heuristic: warn if daily volume < $50K (micro-cap danger zone)
+                # Get price from row[1] 
+                price_str = row[1].replace(',', '')
+                if price_str != '—':
+                    dollar_volume = current_vol * float(price_str)
+                    if dollar_volume < 50000:
+                        print(f"  {ticker_str}: SEVERE liquidity - only ${dollar_volume:,.0f} traded today")
+                        warnings_found = True
+                    elif dollar_volume < 100000:
+                        print(f"  {ticker_str}: Low liquidity - ${dollar_volume:,.0f} traded today")
+                        warnings_found = True
+        except:
+            pass
+    
+    if not warnings_found:
+        print("✓ No liquidity warnings")
 
     print("\n[ Your Instructions ]")
     print(
@@ -1153,21 +1280,57 @@ def daily_results(chatgpt_portfolio: pd.DataFrame, cash: float) -> None:
 # Orchestration
 # ------------------------------
 
-def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], float]:
-    """Load the most recent portfolio snapshot and cash balance from global PORTFOLIO_CSV."""
-    logger.info("Reading CSV file: %s", PORTFOLIO_CSV)
-    df = pd.read_csv(PORTFOLIO_CSV)
-    logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV)
+def load_latest_portfolio_state(
+    starting_equity_override: Optional[Union[str, float, Decimal]] = None,
+) -> tuple[pd.DataFrame | list[dict[str, Any]], float]:
+    """Load the most recent portfolio snapshot and cash balance from global PORTFOLIO_CSV.
+    
+     If the portfolio CSV is empty, this function will:
+      - Use `starting_equity_override` if provided (validated), or
+      - Prompt interactively for a starting cash amount (if stdin is interactive), or
+      - Exit with code 2 if stdin is not interactive and no override provided
+    """
+    logger.info("Reading CSV file: %s", PORTFOLIO_CSV_PATH)
+    try:
+        df = pd.read_csv(PORTFOLIO_CSV_PATH)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(
+        f"Could not find portfolio CSV at {PORTFOLIO_CSV_PATH}.\n"
+        "Make sure you're not running trading_script.py directly without the necessary file.\n"
+        "To fix this, either:\n"
+        "  1) Run the wrapper file: 'Start Your Own/ProcessPortfolio.py',\n"
+        "  2) Run: python trading_script.py --data-dir 'Start Your Own'"
+    ) from e
+
+    logger.info("Successfully read CSV file: %s", PORTFOLIO_CSV_PATH)
     if df.empty:
         portfolio = pd.DataFrame(columns=["ticker", "shares", "stop_loss", "buy_price", "cost_basis"])
         print("Portfolio CSV is empty. Returning set amount of cash for creating portfolio.")
-        try:
-            cash = float(input("What would you like your starting cash amount to be? "))
-        except ValueError:
-            raise ValueError(
-                "Cash could not be converted to float datatype. Please enter a valid number."
-            )
+         
+         
+        # 0) If override provided, validate and use it
+        if starting_equity_override is not None:
+            parsed = parse_starting_equity(starting_equity_override)
+            if parsed is None:
+                raise ValueError("Provided starting equity is invalid. Please pass a positive number.")
+            return portfolio, float(parsed)
+
+        # 1) No override: if stdin not interactive, exit gracefully (no hanging)
+        if not sys.stdin.isatty():
+            print("Error: No starting equity provided and stdin is not interactive. Provide --starting-equity or run interactively.")
+            sys.exit(2)
+
+        # 2) Interactive prompt until valid
+        while True:
+            raw = input("What would you like your starting cash amount to be? ").strip()
+            parsed = parse_starting_equity(raw)
+            if parsed is not None:
+                cash = float(parsed)
+                break
+            print("Invalid amount. Enter a positive number (commas, underscores, $ prefix allowed). Try again.")
+
         return portfolio, cash
+
 
     non_total = df[df["Ticker"] != "TOTAL"].copy()
     non_total["Date"] = pd.to_datetime(non_total["Date"], format="mixed", errors="coerce")
@@ -1183,7 +1346,6 @@ def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], 
             "Total Equity",
             "Action",
             "Current Price",
-            "PnL",
             "Total Value",
         ],
         inplace=True,
@@ -1208,39 +1370,43 @@ def load_latest_portfolio_state() -> tuple[pd.DataFrame | list[dict[str, Any]], 
     return latest_tickers, cash
 
 
-def main(data_dir: Path | None = None) -> None:
+def main(data_dir: Path | None = None, starting_equity_override: Optional[Union[str, float, Decimal]] = None) -> None:
     """Check versions, then run the trading script."""
     if data_dir is not None:
         set_data_dir(data_dir)
     
-    chatgpt_portfolio, cash = load_latest_portfolio_state()
+    chatgpt_portfolio, cash = load_latest_portfolio_state(starting_equity_override=starting_equity_override)
     chatgpt_portfolio, cash = process_portfolio(chatgpt_portfolio, cash)
     daily_results(chatgpt_portfolio, cash)
-
 
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-dir", default=None, help="Optional data directory")
-    parser.add_argument("--asof", default=None, help="Treat this YYYY-MM-DD as 'today' (e.g., 2025-08-27)")
-    parser.add_argument("--log-level", default="INFO", 
-                       choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-                       help="Set the logging level (default: INFO)")
+    parser.add_argument("--data-dir", default=None, help="Required data directory")
+    parser.add_argument("--asof", default=None, help="Treat this YYYY-MM-DD as 'today'")
+    parser.add_argument(
+        "--log-level",
+        default=None,   # default = None means no logging unless specified
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Set the logging level (default: none)"
+    )
+    parser.add_argument("--starting-equity", "-s", default=None,
+                       help="Optional starting equity")
     args = parser.parse_args()
 
-    
-    # Configure logging level
-    logging.basicConfig(
-        level=getattr(logging, args.log_level.upper()),
-        format='🔥 %(asctime)s - %(filename)s:%(lineno)d - %(levelname)s - %(message)s'
-    )
-
-    # Log initial global state and command-line arguments
-    _log_initial_state()
-    logger.info("Script started with arguments: %s", vars(args))
+    # Configure logging only if requested
+    if args.log_level:
+        logging.basicConfig(
+            level=getattr(logging, args.log_level.upper()),
+            format="%(asctime)s - %(filename)s:%(lineno)d - %(levelname)s - %(message)s",
+            force=True
+        )
+        logging.getLogger("peewee").setLevel(logging.WARNING) # ignore constant info messages from PeeWee
+        _log_initial_state()
+        logger.info("Script started with arguments: %s", vars(args))
 
     if args.asof:
         set_asof(args.asof)
 
-    main(Path(args.data_dir) if args.data_dir else None)
+    main(Path(args.data_dir) if args.data_dir else None, starting_equity_override=args.starting_equity)

@@ -78,7 +78,7 @@ def load_portfolio_details(
     df = pd.read_csv(portfolio_csv)
     totals = df[df["Ticker"] == "TOTAL"].copy()
     if totals.empty:
-        raise SystemExit("Portfolio CSV contains no TOTAL rows.")
+        raise SystemExit("""Portfolio CSV contains no TOTAL rows. Please run 'python trading_script.py --data-dir "Start Your Own"' at least once for graphing data.""")
 
     totals["Date"] = pd.to_datetime(totals["Date"], errors="coerce")
     totals["Total Equity"] = pd.to_numeric(totals["Total Equity"], errors="coerce")

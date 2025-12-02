@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Auto Commit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 23 * * 1-5"   # 5:30 PM CST Mon–Fri
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true   # allow pushing
+      - name: Set Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pandas-market-calendars
+
+      - name: End if market holiday or weekend
+        run: |
+          python - << 'EOF'
+          import sys
+          from datetime import datetime
+          import pandas_market_calendars as mcal
+
+          nyse = mcal.get_calendar('NYSE')
+          today = datetime.utcnow().date()
+          schedule = nyse.schedule(start_date=today, end_date=today)
+
+          if schedule.empty:
+              print("NYSE is closed today — holiday or weekend. Skipping workflow.")
+              sys.exit(78)  # NEUTRAL EXIT CODE
+          else:
+              print("Market open — continuing workflow.")
+          EOF
+
+      - name: Process portfolio | Pressing 'Enter' to skip
+        run: python trading_script.py --data-dir "Scripts and CSV Files" --starting-equity 100
+
+      - name: Update Graph
+        run: python "Scripts and CSV Files/Generate Graph.py"
+
+      - name: Commit and push
+        run: |
+          DATE=$(date +"%m/%d")
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Automated update for $DATE" || echo "No changes to commit"
+          git push

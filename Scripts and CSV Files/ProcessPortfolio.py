@@ -8,7 +8,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from trading_script import main#, set_asof
 
-# set_asof("2025-08-28")
+#set_asof("2025-09-30")
 
 
 if __name__ == "__main__":

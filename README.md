@@ -47,7 +47,7 @@ So, starting with just $100, I wanted to answer a simple but powerful question:
 
 ![Latest Performance Results](Results.png)
 
-**Current Status:** Portfolio is outperforming the S&P 500 benchmark
+**Current Status:** Portfolio is underperforming the S&P 500 benchmark
 
 *Performance data is updated after each trading day. See the CSV files in `Scripts and CSV Files/` for detailed daily tracking.*
 
@@ -69,6 +69,7 @@ Contributions are very welcome! This project is community-oriented, and your hel
 
 Whether it’s fixing a typo, adding features, or discussing new ideas, all contributions are appreciated!
 
+For more information, check out: [Contributing Guide](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Other/CONTRIBUTING.md)
 
 # Why This Matters
 AI is being hyped across every industry, but can it really manage money without guidance?
@@ -81,7 +82,7 @@ This project is an attempt to find out — with transparency, data, and a real b
 - **Python** - Core scripting and automation
 - **pandas + yFinance** - Market data fetching and analysis
 - **Matplotlib** - Performance visualization and charting
-- **ChatGPT-4** - AI-powered trading decision engine
+- **ChatGPT-5** - AI-powered trading decision engine
 
 ## Key Features
 - **Robust Data Sources** - Yahoo Finance primary, Stooq fallback for reliability
