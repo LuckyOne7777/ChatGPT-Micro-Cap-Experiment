@@ -175,7 +175,7 @@ def run_automated_trading(api_key: str, model: str = "gpt-4", data_dir: str = "S
     set_data_dir(data_path)
     
     # Load current portfolio
-    portfolio_file = data_path / "chatgpt_portfolio_update.csv"
+    portfolio_file = data_path / "Daily Updates.csv"
     if portfolio_file.exists():
         portfolio_df, cash = load_latest_portfolio_state(str(portfolio_file))
     else:

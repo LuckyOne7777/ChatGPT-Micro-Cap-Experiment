@@ -17,7 +17,7 @@ import pandas as pd
 import yfinance as yf
 
 DATA_DIR = Path(__file__).resolve().parent
-PORTFOLIO_CSV = DATA_DIR / "chatgpt_portfolio_update.csv"
+PORTFOLIO_CSV = DATA_DIR / "Daily Updates.csv"
 
 
 def parse_date(date_str: str, label: str) -> pd.Timestamp:
