@@ -159,7 +159,7 @@ def main() -> dict:
     plt.text(
         largest_end,
         largest_peak_value + 2.2,
-        f"+{largest_gain:.1f}% largest gain",
+        f"+{largest_gain:.1f}%",
         color="green",
         fontsize=9,
     )
