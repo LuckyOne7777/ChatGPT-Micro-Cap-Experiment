@@ -640,7 +640,10 @@ Would you like to log a manual trade? Enter 'b' for buy, 's' for sell, "u" to up
                     if sell_order_type == 'l':
                         sell_price = float(input("Enter sell LIMIT price: "))
                     elif sell_order_type == 'm':
-                        sell_price = o
+                        s, e = trading_day_window()
+                        fetch = download_price_data(ticker, start=s, end=e, auto_adjust=False, progress=False)
+                        data = fetch.df  
+                        sell_price = float(data["Open"].iloc[-1])
                     else:
                         print("Unknown order type. Use 'm' or 'l'.")
                         continue
