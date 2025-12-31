@@ -1,10 +1,11 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Auto Commit
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "30 23 * * 1-5"   # 5:30 PM CST Mon–Fri
+# on:
+#   workflow_dispatch:
+#   schedule:
+#     - cron: "30 23 * * 1-5"   # 5:30 PM CST Mon–Fri
+
 permissions:
   contents: write
 
