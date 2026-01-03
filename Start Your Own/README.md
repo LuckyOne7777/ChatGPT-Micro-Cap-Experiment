@@ -51,16 +51,16 @@ Simply a wrapper for `trading_script.py`. Will automatically use 'Start Your Own
 
 **Generating Graphs:**
 
-**Program will ALWAYS use 'Start Your Own/chatgpt_portfolio_update.csv' for data.**
+**Program will ALWAYS use 'Start Your Own/Daily Updates.csv' for data.**
 
 1. **Ensure you have portfolio data**
-   - Run `ProcessPortfolio.py` at least once so `chatgpt_portfolio_update.csv` has data.
+   - Run `ProcessPortfolio.py` at least once so `Daily Updates.csv` has data.
 
    ```bash
-   python "Start Your Own/Generate_Graph.py"
+   python "Start Your Own/Generate Graph.py"
    ```
 
-### Argument Table for 'Generate_Graph.py'
+### Argument Table for 'Generate Graph.py'
 
 | Argument            | Type   | Default          | Description                                                        |
 |---------------------|--------|------------|--------------------------------------------------------------------------|
@@ -76,12 +76,12 @@ Always run the program after the market closes at 4:00 PM EST, otherwise it will
 Because the program relies on past data, orders for a given day are generated after that day’s trading session and must be placed on the following trading day. This prevents lookahead bias. For example, When I receive orders from ChatGPT, I run the program and input the orders the close the day after.  
 
 **Information**
-   - The program uses past data from 'chatgpt_portfolio_update.csv' to automatically grab today's portfolio.
-   - If 'chatgpt_portfolio_update.csv' is empty (meaning no past trading days logged), you will required to enter your starting cash.
+   - The program uses past data from 'Daily Updates.csv' to automatically grab today's portfolio.
+   - If 'Daily Updates.csv' is empty (meaning no past trading days logged), you will required to enter your starting cash.
    - From here, you can set up your portfolio or make any changes.
    - The script asks if you want to record manual buys or sells.
    - After you hit 'Enter' all calculations for the day are made.
-   - Results are saved to `chatgpt_portfolio_update.csv` and any trades are added to `chatgpt_trade_log.csv`.
+   - Results are saved to `Daily Updates.csv` and any trades are added to `chatgpt_trade_log.csv`.
    - In the terminal, daily results are printed. Copy and paste results into the LLM.
 To automate prompts, check out the [Automation Guide](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Other/AUTOMATION_README.md)
 
