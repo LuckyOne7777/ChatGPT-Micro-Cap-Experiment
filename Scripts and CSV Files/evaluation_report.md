@@ -1,5 +1,6 @@
 # Evaluating ChatGPT as a Portfolio Decision-Maker in Microcap Equities
-### **An Exploratory, Forward-Only Paper Trading Study**
+
+## An Exploratory, Forward-Only Paper Trading Study
 
 ## Abstract
 
