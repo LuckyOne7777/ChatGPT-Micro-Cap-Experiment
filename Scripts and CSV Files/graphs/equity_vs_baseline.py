@@ -204,7 +204,7 @@ def main() -> dict:
     plt.tight_layout()
 
     # --- Auto-save to project root ---
-    plt.savefig(RESULTS_PATH, dpi=300, bbox_inches="tight")
+    plt.savefig("", dpi=300, bbox_inches="tight")
     print(f"Saved chart to: {RESULTS_PATH.resolve()}")
 
     plt.show()
