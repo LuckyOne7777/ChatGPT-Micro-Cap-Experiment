@@ -108,14 +108,6 @@ def compute_drawdown(df: pd.DataFrame) -> tuple[pd.Timestamp, float, float]:
 def main() -> dict:
     """Generate and display the comparison graph; return metrics."""
     chatgpt_totals = load_portfolio_totals()
-
-    start_date = pd.Timestamp("2025-06-27")
-    end_date = chatgpt_totals["Date"].max()
-    sp500 = download_baseline("^SPX", start_date, end_date)
-    russell = download_baseline("^RUT", start_date, end_date)
-
-    sp500.to_csv("Frontend/Baseline CSVs/sp500.csv", index=False)
-    russell.to_csv("Frontend/Baseline CSVs/russell.csv", index=False)
     
     # metrics
     largest_start, largest_end, largest_gain = find_largest_gain(chatgpt_totals)
@@ -133,24 +125,6 @@ def main() -> dict:
         color="blue",
         linewidth=2,
     )
-    plt.plot(
-        sp500["Date"],
-        sp500["Adjusted Value"],
-        label="S&P 500 ($100 Invested)",
-        marker="o",
-        color="orange",
-        linestyle="--",
-        linewidth=2,
-    )
-    plt.plot(
-        russell["Date"],
-        russell["Adjusted Value"],
-        label="Russell 2K ($100 Invested)",
-        marker="o",
-        color="Green",
-        linestyle="--",
-        linewidth=2,
-    )
 
     # annotate largest gain
     largest_peak_value = float(
@@ -164,25 +138,7 @@ def main() -> dict:
         fontsize=9,
     )
 
-    # annotate final P/Ls
-    final_date = chatgpt_totals["Date"].iloc[-1]
-    final_chatgpt = float(chatgpt_totals["Total Equity"].iloc[-1])
-    final_spx = float(sp500["Adjusted Value"].iloc[-1])
-    final_rut = float(russell["Adjusted Value"].iloc[-1])
-    plt.text(final_date, final_chatgpt + 0.5, f"{final_chatgpt - 100.0:.1f}%", color="blue", fontsize=9)
-    plt.text(final_date, final_spx + 0.9, f"+{final_spx - 100.0:.1f}%", color="orange", fontsize=9)
-    plt.text(final_date, final_rut + 0.9, f"+{final_rut - 100.0:.1f}%", color="green", fontsize=9)
-
-    # label ATYR's catalyst failure
-    plt.text(
-
-        pd.to_datetime("2025-09-13") + pd.Timedelta(days=0.5),
-        125,
-        f"ATYR falls ~80%",
-        color="red",
-        fontsize=9,
-    )
-    # annotate max drawdown
+        # annotate max drawdown
     plt.text(
         dd_date,
         dd_value + 5,
@@ -191,7 +147,12 @@ def main() -> dict:
         fontsize=9,
     )
 
-    plt.title("ChatGPT's Micro Cap Portfolio vs. S&P 500 vs Russell 2000")
+    # annotate final P/Ls
+    final_date = chatgpt_totals["Date"].iloc[-1]
+    final_chatgpt = float(chatgpt_totals["Total Equity"].iloc[-1])
+    plt.text(final_date, final_chatgpt + 0.5, f"{final_chatgpt - 100.0:.1f}%", color="blue", fontsize=9)
+
+    plt.title("Equity Curve with Run-Up and Drawdown Annotations")
     plt.xlabel("Date")
     plt.ylabel("Value of $100 Investment")
     plt.xticks(rotation=15)
@@ -200,7 +161,7 @@ def main() -> dict:
     plt.tight_layout()
 
     # --- Auto-save to project root ---
-    plt.savefig(RESULTS_PATH, dpi=300, bbox_inches="tight")
+    plt.savefig("Scripts and CSV Files/images/equity_with_annotations.png", dpi=300, bbox_inches="tight")
     print(f"Saved chart to: {RESULTS_PATH.resolve()}")
 
     plt.show()
