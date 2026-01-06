@@ -158,13 +158,6 @@ def main() -> dict:
     largest_peak_value = float(
         chatgpt_totals.loc[chatgpt_totals["Date"] == largest_end, "Total Equity"].iloc[0]
     )
-    plt.text(
-        largest_end,
-        largest_peak_value + 2.2,
-        f"+{largest_gain:.1f}%",
-        color="green",
-        fontsize=9,
-    )
 
     # annotate final P/Ls
     final_date = chatgpt_totals["Date"].iloc[-1]
@@ -186,14 +179,6 @@ def main() -> dict:
         fontsize=9,
     )
     """
-    # annotate max drawdown
-    plt.text(
-        dd_date,
-        dd_value + 5,
-        f"{dd_pct:.1f}%",
-        color="red",
-        fontsize=9,
-    )
 
     plt.title("ChatGPT's Micro Cap Portfolio vs. S&P 500 vs Russell 2000")
     plt.xlabel("Date")
@@ -204,7 +189,7 @@ def main() -> dict:
     plt.tight_layout()
 
     # --- Auto-save to project root ---
-    plt.savefig("", dpi=300, bbox_inches="tight")
+    plt.savefig("Scripts and CSV Files/images/equity_vs_baseline.png", dpi=300, bbox_inches="tight")
     print(f"Saved chart to: {RESULTS_PATH.resolve()}")
 
     plt.show()
