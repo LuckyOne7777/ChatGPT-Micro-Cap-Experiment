@@ -24,8 +24,21 @@ All benchmark and portfolio data are recorded at daily frequency, with values re
 
 The experiment covers the period from July 27, 2025 to December 26, 2025, with all portfolio and benchmark data recorded within this timeframe.
 
-
 ## Methodology
+
+### Human Input and Execution
+
+Portfolio and trade log data were updated manually after each NYSE trading day using a standardized processing script, which generated a structured daily input summary (see Appendix [DAILY INPUT]). This summary was provided to the language model as the sole input for decision-making. If trade actions were requested, they were executed on the subsequent trading day.
+
+Human involvement was strictly limited to data entry and trade execution. No discretionary overrides or optimizations were applied to model-generated decisions.
+
+On a limited number of occasions, daily updates could not be performed following market close. In these cases, the missed update was processed using only past data on that market day. To prevent lookahead bias, the model was explicitly constrained to rely solely on the provided input and was prohibited from accessing external or future information.
+
+### Weekly Research Cycle and Execution Exceptions
+
+A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix [DEEP RESEARCH PROMPT]) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifing questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constriants were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
+
+This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment while maintaining a forward-only execution workflow.
 
 ## Performance Results
 
