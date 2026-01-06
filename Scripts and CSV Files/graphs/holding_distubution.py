@@ -16,7 +16,7 @@ def plot_holding_period_distribution(trades_df: pd.DataFrame, bins: int = 10):
     plt.figure()
     plt.hist(holding_days, bins=bins)
     plt.title("Holding Period Distribution (Days)")
-    plt.ylabel("Frequency")
+    plt.ylabel("Ticker Frequency")
     plt.xlabel("Holding Days")
     plt.savefig("Scripts and CSV Files/images/holding_distubution.png", dpi=300, bbox_inches="tight")
     plt.show()
