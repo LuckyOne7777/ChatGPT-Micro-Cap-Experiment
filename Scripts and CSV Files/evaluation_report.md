@@ -50,14 +50,32 @@ As shown in Figure 1, portfolio equity declined substantially relative to both t
 ![](images/equity_with_annotations.png)
 **Figure 2.** Portfolio equity with max drawdown percentage (red) and largest run (green).
 
-Figure 2 highlights the largest upward equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached −50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
+Figure 2 highlights the largest positive equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached −50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
 
 
 ## Trade-Level Analysis
 
+
+
+Full Individual Trade Table found in Appendix[Individual Trade Table]
+
 ## Concentration and Risk Analysis
 
+Full Pure PnL Tables found in Appendix[Pure PnL Tables]
+
+![](images/return_by_trades.png)
+**Figure 3.** Realized PnL (USD) by ticker.
+
+![](images/top_losses_vs_wins.png)
+**Figure 4.**
+
 ## Behavioral Analysis
+
+![](images/holding_distubution.png)
+**Figure 6.** Distribution of holding periods across individual closed trades.
+
+![](images/repeated_exposure.png)
+**Figure 7.** Number of buy-side trade entries per ticker.
 
 ## Operational Constraints and Failure Modes
 
