@@ -38,9 +38,20 @@ On a limited number of occasions, daily updates could not be performed following
 
 A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix [DEEP RESEARCH PROMPT]) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifing questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constriants were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
 
-This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment while maintaining a forward-only execution workflow.
+This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment. All execution remained forward-only.
 
 ## Performance Results
+
+![](images/equity_vs_baseline.png)
+**Figure 1.** Portfolio equity versus benchmark (normalized to $100) over time.
+
+As shown in Figure 1, portfolio equity declined substantially relative to both the Russell 2000 and the S&P 500 over the experimental period.
+
+![](images/equity_with_annotations.png)
+**Figure 2.** Portfolio equity with max drawdown percentage (red) and largest run (green).
+
+Figure 2 highlights the largest upward equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached −50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
+
 
 ## Trade-Level Analysis
 
