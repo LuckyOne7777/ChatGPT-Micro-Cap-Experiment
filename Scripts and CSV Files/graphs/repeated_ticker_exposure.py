@@ -9,6 +9,7 @@ def plot_repeated_ticker_exposure(trades_df: pd.DataFrame):
     plt.figure()
     entry_counts.plot(kind="bar")
     plt.title("Number of Entries per Ticker")
+    plt.ylabel("Buy-Side Trades")
     plt.savefig("Scripts and CSV Files/images/repeated_exposure.png", dpi=300, bbox_inches="tight")
     plt.show()
 
