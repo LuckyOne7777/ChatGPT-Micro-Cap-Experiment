@@ -66,14 +66,14 @@ Full Pure PnL Tables found in Appendix[Pure PnL Tables]
 ![](images/return_by_trades.png)
 **Figure 3.** Realized PnL (USD) by ticker.
 
-As shown in Figure 3, 10 of the 22 tickers the model bought within the experimental period generated profits.
+Figure 3 shows 10 of the 22 tickers the model bought within the experimental period generated profits.
 Profits among tickers generally had concentrated profits; with the exception of ATYR,
 losses were less concentrated. 
 
 ![](images/top_losses_vs_wins.png)
 **Figure 4.** Top realized PnL (USD) ticker wins vs. losses.
 
-Losses were larger in magnitude than gains, with ATYR accounting for the most significant downside outcome.
+As shown in Figure 4, losses were larger in magnitude than gains, with ATYR accounting for the most significant downside outcome.
 
 ## Behavioral Analysis
 
