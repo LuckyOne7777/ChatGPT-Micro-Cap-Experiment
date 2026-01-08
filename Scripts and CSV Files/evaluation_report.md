@@ -63,6 +63,8 @@ The model was restricted to purchasing equities within the microcapitalization u
 
 Given these conditions, the model’s reasoning was expected to rely primarily on publicly available disclosures, such as company press releases, and on information typically discussed in retail-focused analyses. This design choice allowed observation of the model’s decision-making processes in environments with sparse formal coverage and higher informational asymmetry.
 
+During execution, positions were maintained at the ticker level with averaged cost bases, while trade-level outcomes were reconstructed post hoc by matching logged buy and sell events using FIFO logic.
+
 ### Data Sources and Information Constraints
 
 Market data used for portfolio calculations, metrics, and summaries were sourced from Yahoo Finance and restricted to end-of-day observations during regular trading hours. These data were processed into standardized daily input summaries reflecting historical price information, portfolio holdings, and cash balances.
