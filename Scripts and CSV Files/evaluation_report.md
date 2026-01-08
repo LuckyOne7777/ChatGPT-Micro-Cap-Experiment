@@ -105,10 +105,6 @@ Full Individual Trade Table found in Appendix[Individual Trade Table]
 
 ## Concentration and Risk Analysis
 
-### TODO:
-
-Full Pure PnL Tables found in Appendix[Pure PnL Tables]
-
 ![](images/return_by_trades.png)
 **Figure 3.** Realized PnL (USD) by ticker.
 
@@ -120,6 +116,15 @@ losses were less concentrated.
 **Figure 4.** Top realized PnL (USD) ticker wins vs. losses.
 
 As shown in Figure 4, losses were larger in magnitude than gains, with ATYR accounting for the most significant downside outcome.
+
+These distributions indicate a highly concentrated return profile, with overall portfolio outcomes driven by a small number of large-magnitude trades rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a limited number of positions accounting for a disproportionate share of total losses. As a result, aggregate performance was sensitive to individual trade outcomes.
+
+Summary statistics reported in this section are derived from the Pure PnL tables provided in Appendix [Pure PnL Tables].
+
+Calculated summary metrics further support the patterns observed in Figures 3 and 4; aggregate trade outcomes exhibited pronounced asymmetry. While average gains (6.11) and average losses (−6.15) were similar in magnitude, median losses (−2.61) were substantially smaller than median gains (4.97), indicating that downside performance was driven by a small number of large negative outcomes. This concentration is reflected in an overall profit factor of 0.83, consistent with losses outweighing gains over the experimental period.
+
+Overall portfolio performance was therefore sensitive to a small number of extreme trade outcomes rather than to broadly distributed incremental returns.
+
 
 ## Behavioral Analysis
 
