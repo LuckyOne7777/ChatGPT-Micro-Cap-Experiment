@@ -1,7 +1,13 @@
 import pandas as pd
 import numpy as np
 
-
+def avg_ticker():
+    equity_df = pd.read_csv("Scripts and CSV Files/Daily Updates.csv") 
+    equity_df = equity_df[equity_df["Ticker"] != "TOTAL"] 
+    total_ticker_num = len(equity_df["Ticker"]) 
+    total_day_num = equity_df["Date"].nunique()
+    avg_tickers = total_ticker_num / total_day_num
+    return avg_tickers
 # ==========================================================
 # BUILD INDIVIDUAL TRADES (FIFO, PARTIAL EXITS SUPPORTED)
 # ==========================================================
@@ -196,6 +202,8 @@ def compute_trade_metrics(trade_log: pd.DataFrame):
 # ==========================================================
 def print_trade_results(results: dict):
 
+    avg_tickers = avg_ticker()
+
     print("\n" + "=" * 60)
     print("TRADE PERFORMANCE METRICS (INDIVIDUAL TRADES)")
     print("=" * 60)
@@ -212,6 +220,11 @@ def print_trade_results(results: dict):
     print("=" * 60)
     for k, v in results["pure_ticker_metrics"].items():
         print(f"{k:30s}: {v:,.4f}" if isinstance(v, float) else f"{k:30s}: {v}")
+
+    print("\n" + "=" * 60)
+    print("AVERAGE NUMBER OF TICKERS PER DAY")
+    print("=" * 60)
+    print(avg_tickers)
 
     print("\n" + "=" * 60)
     print("PURE PnL TRADES (ONE ROW PER TICKER)")
