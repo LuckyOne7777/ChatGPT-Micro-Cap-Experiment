@@ -79,6 +79,11 @@ total_holding_days            : 819.0000
 avg_position_size             : 18.1368
 
 ============================================================
+AVERAGE NUMBER OF TICKERS PER DAY
+============================================================
+3.130081300813008
+
+============================================================
 PURE PnL TRADES (ONE ROW PER TICKER)
 ============================================================
 Ticker        PnL  Holding_Days  avg_position_size  num_trades
