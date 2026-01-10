@@ -118,7 +118,7 @@ losses were less concentrated.
 
 As shown in Figure 4, losses were larger in magnitude than gains, with ATYR accounting for the most significant downside outcome.
 
-These distributions indicate a highly concentrated return profile, with overall portfolio outcomes driven by a small number of large-magnitude trades rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a limited number of positions accounting for a disproportionate share of total losses. As a result, aggregate performance was sensitive to individual trade outcomes.
+These distributions indicate a highly concentrated return profile, with overall portfolio outcomes driven by a small number of large-magnitude trades rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a limited number of positions accounting for a disproportionate share of total losses. As a result, aggregate performance was sensitive to individual trade outcomes. On average, the portfolio consisted of 3.1 tickers in a given day.
 
 Summary statistics reported in this section are derived from the Pure PnL tables provided in Appendix [Pure PnL Tables].
 
@@ -156,7 +156,7 @@ Financial derivatives were strictly not allowed.
 
 ### Over Concentration
 
-### TODO:
+Throughout the experiment, the portfolio routinely consisted of 2-3 concentrated tickers. The overall portfolio was particularly sensitive to individual ticker factors.
 
 ### Buying Past Losing Stocks
 
@@ -165,7 +165,6 @@ As shown in Figure 4 and Figure 6, FBIO and IINN were among the largest contribu
 ### Reliance on Bianry Outcomes
 
 Trade selection was characterized by exposure to event-driven catalysts (e.g., regulatory announcements), associated with large positive or negative outcomes. Comparatively limited exposure was observed in lower-volatility or incremental-return investing.
-
 
 
 ## Discussion
