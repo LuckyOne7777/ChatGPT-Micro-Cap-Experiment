@@ -100,8 +100,7 @@ Figure 2 highlights the largest positive equity movement and the maximum drawdow
 
 ## Trade-Level Analysis
 
-### TODO:
-
+Over the experimental period, 46 buy-side trades were executed, of which 50% were profitable. Average losses (−$3.79) exceeded average gains (+$3.07), resulting in a profit factor of 0.85 and a negative expectancy of −0.36 per trade. Median outcomes, however, exhibited the opposite pattern, with median gains (+1.62) exceeding median losses (−1.36), indicating that overall performance was driven by a limited number of relatively large losing trades rather than by consistently unfavorable trade outcomes.
 
 Full Individual Trade Table found in Appendix[Individual Trade Table]
 
@@ -123,9 +122,9 @@ These distributions indicate a highly concentrated return profile, with overall 
 
 Summary statistics reported in this section are derived from the Pure PnL tables provided in Appendix [Pure PnL Tables].
 
-Calculated summary metrics further support the patterns observed in Figures 3 and 4; aggregate trade outcomes exhibited pronounced asymmetry. While average gains (6.11) and average losses (−6.15) were similar in magnitude, median losses (−2.61) were substantially smaller than median gains (4.97), indicating that downside performance was driven by a small number of large negative outcomes. This concentration is reflected in an overall profit factor of 0.83, consistent with losses outweighing gains over the experimental period.
+Calculated summary metrics further support the patterns observed in Figures 3 and 4; aggregate trade outcomes exhibited pronounced asymmetry. While average gains (6.11) and average losses (−6.15) were similar in magnitude, median losses (−2.61) were substantially smaller than median gains (4.97), indicating that downside performance was driven by a small number of large negative outcomes. This concentration is reflected in an overall profit factor (0.83) and expectancy (-0.58), consistent with losses outweighing gains over the experimental period.
 
-Overall portfolio performance was therefore sensitive to a small number of extreme trade outcomes rather than to broadly distributed incremental returns.
+The trade-level distribution of outcomes aligns with the concentration patterns observed in ticker-level PnL, indicating that portfolio-level concentration emerged from a small number of large-magnitude trade outcomes. 
 
 
 ## Behavioral Analysis
@@ -136,11 +135,38 @@ Overall portfolio performance was therefore sensitive to a small number of extre
 **Figure 6.** Distribution of holding periods across individual closed trades.
 
 ![](images/repeated_exposure.png)
-**Figure 7.** Number of buy-side trade entries per ticker.
+**Figure 7.** Number of repeated buy-side trade entries per ticker.
 
-## Operational Constraints and Failure Modes
+## Operational Constraints
+
+### Human Input Required
+Human input was needed in the execution loop for inputting trades and prompting for each trading day. 
+
+### Micro-Cap Stocks Only
+The model was only allowed to buy tickers with market capitalizations equal to or less 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
+
+### Close Data Only
+All data was calculated based of end-of-day trading data only.
+
+### Financial Derivatives Prohibited
+
+Financial derivatives were strictly not allowed.
+
+## Failure Modes
+
+### Over Concentration
 
 ### TODO:
+
+### Buying Past Losing Stocks
+
+As shown in Figure 4 and Figure 6, FBIO and IINN were among the largest contributors to realized losses. Both tickers had relatively high trade frequencies, with FBIO having four buy-side trades and IINN receiving three.
+
+### Reliance on Bianry Outcomes
+
+Trade selection was characterized by exposure to event-driven catalysts (e.g., regulatory announcements), associated with large positive or negative outcomes. Comparatively limited exposure was observed in lower-volatility or incremental-return investing.
+
+
 
 ## Discussion
 
