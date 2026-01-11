@@ -173,7 +173,21 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 ## Limitations
 
-### TODO:
+### Short Timeframe
+
+Due to the limited experimental period, the data may not be representative of the model's behavior across different market regimes.
+
+### Market Captialization
+
+The evalution should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitlizations. 
+
+### Single-Run Evaluation
+
+The evaluation is based on a single experimental run and does not capture variability across repeated runs or alternative random intial conditions.
+
+### Generalizations
+
+The evaluation or its conclusions should not be generalized to LLM trading as a whole. This conclusions of evauluation should be interpreted with the stated constraints and limitations in mind.
 
 ## Conclusion
 
