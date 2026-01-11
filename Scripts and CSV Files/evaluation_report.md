@@ -84,6 +84,8 @@ Weekly research reports and output summaries generated during the study were arc
 
 All information supplied to the model was limited to data available as of the close of the relevant trading day. No future market data, post-close information, or subsequent outcomes were included in any model input.
 
+
+
 **NOTE: Trade-level statistics were computed at the FIFO lot level, with partial exits treated as independent realized lots rather than as distinct position entries.**
 
 ### Bias Mitigation and Validity Controls
@@ -210,6 +212,13 @@ The evaluation is based on a single experimental run and does not capture variab
 ### Generalizations
 
 The evaluation or its conclusions should not be generalized to LLM trading as a whole. This conclusions of evauluation should be interpreted with the stated constraints and limitations in mind.
+
+### Prompt and Model Variability
+
+The experimental setup relied on interactive use of the publicly available ChatGPT interface, introducing sources of variability that could not be fully controlled. Prompt templates evolved modestly to clarify existing constraints, newer model versions were adopted as they became available, and generation parameters such as temperature were not explicitly fixed. 
+
+The evaluation focuses on observable decision behaviors under consistent informational and procedural constraints rather than on comparisons across specific model configurations.
+
 
 ## Conclusion
 
