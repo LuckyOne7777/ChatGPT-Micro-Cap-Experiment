@@ -42,9 +42,9 @@ def plot_holding_period_distribution(trades_df: pd.DataFrame, bins: int = 10):
 
     plt.figure()
     plt.hist(holding_days, bins=bins)
-    plt.title("Holding Period Distribution (Days)")
+    plt.title("Distribution of FIFO Holding Periods (Days)")
     plt.xlabel("Holding Days")
-    plt.ylabel("Trade Frequency")
+    plt.ylabel("Lot Exit Count")
     plt.savefig(
         "Scripts and CSV Files/images/holding_distubution.png",
         dpi=300,
