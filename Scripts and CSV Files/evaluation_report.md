@@ -10,9 +10,20 @@
 
 ### TODO:
 
-## Scope and Contribution
+## Scope & Contribution
 
-### TODO:
+### Scope of Evaluation
+
+ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determeined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025. 
+
+### Nature of Contribution 
+
+Forward-only evaluation of ChatGPT's performance and behavior as a portfolio decision-maker within the experimental setup.
+The study contributes detailed documentation of decision behavior, execution results, and observed failure modes in the limited information and high volatility of micro-cap equities.
+
+### Non-Claims
+
+The evaluation is not a general test of LLM trading ability. Parameters were not optimized to improve behavior or performance during the experimental period. The setup is not intended as a deployable trading algorithm to generate returns.
 
 ## Experimental Setup
 
@@ -43,7 +54,7 @@ All benchmark and portfolio data are recorded at daily frequency, with values re
 
 ### Time Span
 
-The experiment covers the period from July 27, 2025 to December 26, 2025, with all portfolio and benchmark data recorded within this timeframe.
+The experiment covers the period from June 27, 2025 to December 26, 2025, with all portfolio and benchmark data recorded within this timeframe.
 
 ## Methodology
 
