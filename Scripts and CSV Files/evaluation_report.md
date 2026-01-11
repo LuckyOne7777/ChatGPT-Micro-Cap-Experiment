@@ -63,8 +63,6 @@ The model was restricted to purchasing equities within the microcapitalization u
 
 Given these conditions, the model’s reasoning was expected to rely primarily on publicly available disclosures, such as company press releases, and on information typically discussed in retail-focused analyses. This design choice allowed observation of the model’s decision-making processes in environments with sparse formal coverage and higher informational asymmetry.
 
-During execution, positions were maintained at the ticker level with averaged cost bases, while trade-level outcomes were reconstructed post hoc by matching logged buy and sell events using FIFO logic.
-
 ### Data Sources and Information Constraints
 
 Market data used for portfolio calculations, metrics, and summaries were sourced from Yahoo Finance and restricted to end-of-day observations during regular trading hours. These data were processed into standardized daily input summaries reflecting historical price information, portfolio holdings, and cash balances.
@@ -74,6 +72,8 @@ Although the research process permitted consultation of publicly available web s
 Weekly research reports and output summaries generated during the study were archived for documentation and analysis purposes. These materials were not incorporated into subsequent model inputs and did not influence future decision-making. Textual reports were not analyzed or used for the conclusions stated in this study.
 
 All information supplied to the model was limited to data available as of the close of the relevant trading day. No future market data, post-close information, or subsequent outcomes were included in any model input.
+
+**NOTE: Trade-level statistics were computed at the FIFO lot level, with partial exits treated as independent realized lots rather than as distinct position entries.**
 
 ### Bias Mitigation and Validity Controls
 
@@ -100,7 +100,7 @@ Figure 2 highlights the largest positive equity movement and the maximum drawdow
 
 ## Trade-Level Analysis
 
-Over the experimental period, 46 buy-side trades were executed, of which 50% were profitable. Average losses (−$3.79) exceeded average gains (+$3.07), resulting in a profit factor of 0.85 and a negative expectancy of −0.36 per trade. Median outcomes, however, exhibited the opposite pattern, with median gains (+1.62) exceeding median losses (−1.36), indicating that overall performance was driven by a limited number of relatively large losing trades rather than by consistently unfavorable trade outcomes.
+Using FIFO lot-level reconstruction, 46 realized lot exits were observed. Exactly 50% of lot exits were profitable; however, average losses exceeded average gains (−3.83 vs +3.01), producing a profit factor of 0.82 and a negative per-lot expectancy of −0.41. Median outcomes showed the opposite pattern, indicating that overall underperformance was driven by a small number of large losses rather than uniformly poor trade selection.
 
 Full Individual Trade Table found in Appendix[Individual Trade Table]
 
@@ -116,16 +116,15 @@ losses were less concentrated.
 ![](images/top_losses_vs_wins.png)
 **Figure 4.** Top realized PnL (USD) ticker wins vs. losses.
 
-As shown in Figure 4, losses were larger in magnitude than gains, with ATYR accounting for the most significant downside outcome.
+As shown in Figure 4, realized losses were larger in magnitude than realized gains. The most significant downside outcome was attributable to ATYR, indicating that overall portfolio performance was strongly influenced by a small number of adverse position-level outcomes.
 
-These distributions indicate a highly concentrated return profile, with overall portfolio outcomes driven by a small number of large-magnitude trades rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a limited number of positions accounting for a disproportionate share of total losses. As a result, aggregate performance was sensitive to individual trade outcomes. On average, the portfolio consisted of 3.1 tickers in a given day.
+Taken together, these distributions indicate a highly concentrated return profile in which aggregate portfolio performance was driven by a limited number of large-magnitude position outcomes rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a small subset of positions accounting for a disproportionate share of total losses. As a result, overall performance was highly sensitive to individual ticker-level outcomes. On average, the portfolio consisted of 3.1 tickers on a given trading day.
 
-Summary statistics reported in this section are derived from the Pure PnL tables provided in Appendix [Pure PnL Tables].
+Summary statistics reported in this section are derived from the position-level (“Pure PnL”) tables provided in Appendix [Pure PnL Tables].
 
-Calculated summary metrics further support the patterns observed in Figures 3 and 4; aggregate trade outcomes exhibited pronounced asymmetry. While average gains (6.11) and average losses (−6.15) were similar in magnitude, median losses (−2.61) were substantially smaller than median gains (4.97), indicating that downside performance was driven by a small number of large negative outcomes. This concentration is reflected in an overall profit factor (0.83) and expectancy (-0.58), consistent with losses outweighing gains over the experimental period.
+Although trade execution occurred at the FIFO lot level, aggregation of realized outcomes at the position level reveals that only 10 of 22 tickers generated positive total PnL. Average losses exceeded average gains in magnitude, and the largest single position loss dominated overall results, consistent with exposure to binary, event-driven return dynamics.
 
-The trade-level distribution of outcomes aligns with the concentration patterns observed in ticker-level PnL, indicating that portfolio-level concentration emerged from a small number of large-magnitude trade outcomes. 
-
+The distribution of FIFO lot-level outcomes (reported elsewhere) aligns with the concentration patterns observed at the ticker level, indicating that portfolio-level concentration emerged from a small number of large-magnitude realized exits rather than from uniformly poor trade execution.
 
 ## Behavioral Analysis
 
