@@ -139,13 +139,25 @@ The distribution of FIFO lot-level outcomes (reported elsewhere) aligns with the
 
 ## Behavioral Analysis
 
-### TODO:
-
 ![](images/holding_distubution.png)
-**Figure 6.** Distribution of holding periods across individual closed trades.
+**Figure 6.** Distribution of holding periods across individual closed lots.
+
+Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 trading days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days.
+
+![](images/total_logged_days_by_ticker.png)
+**Figure 7.** Total individual ticker holding duration during trading days.
+
+Figure 7 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
+
+Instead, individual ticker outcomes were more impactful for overall performance than holding duration.
 
 ![](images/repeated_exposure.png)
-**Figure 7.** Number of repeated buy-side trade entries per ticker.
+**Figure 8.** Number of repeated buy-side trade entries per ticker.
+
+Seven of the 22 tickers were purchased on multiple occasions. Notably, the three tickers with the lowest realized PnL (see Figure 4) were all subject to repeated buy-side entries. In contrast, the three highest-PnL tickers were each purchased only once during the experimental period.
+
+This pattern suggests persistence in position-level theses, with the model exhibiting limited responsiveness to realized performance when determining whether to re-enter previously traded securities.
+
 
 ## Operational Constraints
 
