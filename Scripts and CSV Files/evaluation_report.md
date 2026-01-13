@@ -6,9 +6,13 @@
 
 ### TODO:
 
+---
+
 ## Introduction
 
 ### TODO:
+
+---
 
 ## Scope & Contribution
 
@@ -23,7 +27,10 @@ The study contributes detailed documentation of decision behavior, execution res
 
 ### Non-Claims
 
-The evaluation is not a general test of LLM trading ability. Parameters were not optimized to improve behavior or performance during the experimental period. The setup is not intended as a deployable trading algorithm to generate returns.
+The evaluation is not a general test of LLM trading ability. 
+Parameters were not optimized to improve behavior or performance during the experimental period. The setup is not intended as a deployable trading algorithm to generate returns.
+
+---
 
 ## Experimental Setup
 
@@ -35,12 +42,14 @@ Human involvement was strictly limited to data entry and trade execution. No dis
 
 On a limited number of occasions, daily updates could not be performed following market close. In these cases, the missed update was processed using only past data on that market day. To prevent lookahead bias, the model was explicitly constrained to rely solely on the provided input and was prohibited from accessing external or future information.
 
+
 ### Weekly Research Cycle and Execution Exceptions
 
 A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix [DEEP RESEARCH PROMPT]) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifing questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constriants were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
 
 This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment. Execution remained forward-only.
 
+---
 
 ## Data Description
 
@@ -55,6 +64,8 @@ All benchmark and portfolio data are recorded at daily frequency, with values re
 ### Time Span
 
 The experiment covers the period from June 27, 2025 to December 26, 2025, with all portfolio and benchmark data recorded within this timeframe.
+
+---
 
 ## Methodology
 
@@ -98,6 +109,8 @@ On occasions when daily data updates could not be performed immediately followin
 
 Although prompt templates evolved over the course of the evaluation, all changes were limited to clarifying existing rules and improving the consistency and precision of report formatting. No changes were made to decision logic, constraints, or trade selection criteria.
 
+---
+
 ## Performance Results
 
 ![](images/equity_vs_baseline.png)
@@ -110,12 +123,15 @@ As shown in Figure 1, portfolio equity declined substantially relative to both t
 
 Figure 2 highlights the largest positive equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached −50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
 
+---
 
 ## Trade-Level Analysis
 
 Using FIFO lot-level reconstruction, 46 realized lot exits were observed. Exactly 50% of lot exits were profitable; however, average losses exceeded average gains (−3.83 vs +3.01), producing a profit factor of 0.82 and a negative per-lot expectancy of −0.41. Median outcomes showed the opposite pattern, indicating that overall underperformance was driven by a small number of large losses rather than uniformly poor trade selection.
 
 Full Individual Trade Table found in Appendix[Individual Trade Table]
+
+---
 
 ## Concentration and Risk Analysis
 
@@ -139,6 +155,8 @@ Although trade execution occurred at the FIFO lot level, aggregation of realized
 
 The distribution of FIFO lot-level outcomes (reported elsewhere) aligns with the concentration patterns observed at the ticker level, indicating that portfolio-level concentration emerged from a small number of large-magnitude realized exits rather than from uniformly poor trade execution.
 
+---
+
 ## Behavioral Analysis
 
 ![](images/holding_distubution.png)
@@ -160,6 +178,7 @@ Seven of the 22 tickers were purchased on multiple occasions. Notably, the three
 
 This pattern suggests persistence in position-level theses, with the model exhibiting limited responsiveness to realized performance when determining whether to re-enter previously traded securities.
 
+---
 
 ## Operational Constraints
 
@@ -176,6 +195,8 @@ All data was calculated based of end-of-day trading data only.
 
 Financial derivatives were strictly not allowed.
 
+---
+
 ## Failure Modes
 
 ### Over Concentration
@@ -190,10 +211,13 @@ As shown in Figure 4 and Figure 6, FBIO and IINN were among the largest contribu
 
 Trade selection was characterized by exposure to event-driven catalysts (e.g., regulatory announcements), associated with large positive or negative outcomes. Comparatively limited exposure was observed in lower-volatility or incremental-return investing.
 
+---
 
 ## Discussion
 
 ### TODO:
+
+---
 
 ## Limitations
 
@@ -219,6 +243,7 @@ The experimental setup relied on interactive use of the publicly available ChatG
 
 The evaluation focuses on observable decision behaviors under consistent informational and procedural constraints rather than on comparisons across specific model configurations.
 
+---
 
 ## Conclusion
 
@@ -226,9 +251,13 @@ Across the experimental period, portfolio equity outcomes were dominated by a sm
 
 Rather than evaluating predictive skill or performance optimization, these findings characterize how an LLM would allocate funds, manage exposure, and react to market volatility under conditions of limited capital and elevated risks of micro-cap trading.
 
+---
+
 ## Future Work
 
 ### TODO:
+
+---
 
 ## Appendix A. Metric Definitions and Formulas
 
