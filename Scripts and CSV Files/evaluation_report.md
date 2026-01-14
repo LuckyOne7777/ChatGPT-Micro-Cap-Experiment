@@ -45,7 +45,7 @@ On a limited number of occasions, daily updates could not be performed following
 
 ### Weekly Research Cycle and Execution Exceptions
 
-A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix [DEEP RESEARCH PROMPT]) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifing questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constriants were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
+A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix [DEEP RESEARCH PROMPT]) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifying questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constraints were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
 
 This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment. Execution remained forward-only.
 
@@ -79,7 +79,7 @@ The large language model ChatGPT was used as a decision-making engine for the po
 
 No discretionary judgment was applied to model outputs. Human involvement was limited to prompting the model and executing requested trades exactly as the model instructed. The decision process was fully specified in advance and remained constant throughout the study period.
 
-### Microcap Focus
+### Micro-cap Focus
 
 The model was restricted to purchasing equities within the microcapitalization universe (market capitalization ≤ $300 million). This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
 
@@ -160,19 +160,19 @@ The distribution of FIFO lot-level outcomes (reported elsewhere) aligns with the
 ## Behavioral Analysis
 
 ![](images/holding_distubution.png)
-**Figure 6.** Distribution of holding periods across individual closed lots.
+**Figure 5.** Distribution of holding periods across individual closed lots.
 
-Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 trading days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days.
+Figure 5 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 trading days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days.
 
 ![](images/total_logged_days_by_ticker.png)
-**Figure 7.** Total individual ticker holding duration during trading days.
+**Figure 6.** Total individual ticker holding duration during trading days.
 
-Figure 7 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
+Figure 6 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
 
 Instead, individual ticker outcomes were more impactful for overall performance than holding duration.
 
 ![](images/repeated_exposure.png)
-**Figure 8.** Number of repeated buy-side trade entries per ticker.
+**Figure 7.** Number of repeated buy-side trade entries per ticker.
 
 Seven of the 22 tickers were purchased on multiple occasions. Notably, the three tickers with the lowest realized PnL (see Figure 4) were all subject to repeated buy-side entries. In contrast, the three highest-PnL tickers were each purchased only once during the experimental period.
 
@@ -186,7 +186,7 @@ This pattern suggests persistence in position-level theses, with the model exhib
 Human input was needed in the execution loop for inputting trades and prompting for each trading day. 
 
 ### Micro-Cap Stocks Only
-The model was only allowed to buy tickers with market capitalizations equal to or less 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
+The model was only allowed to buy tickers with market capitalizations equal to or less than 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
 
 ### Close Data Only
 All data was calculated based on end-of-day trading data only.
@@ -235,7 +235,7 @@ The evaluation is based on a single experimental run and does not capture variab
 
 ### Generalizations
 
-The evaluation or its conclusions should not be generalized to LLM trading as a whole. This conclusions of evaluation should be interpreted with the stated constraints and limitations in mind.
+The evaluation or its conclusions should not be generalized to LLM trading as a whole. These conclusions should be interpreted with the stated constraints and limitations in mind.
 
 ### Prompt and Model Variability
 
