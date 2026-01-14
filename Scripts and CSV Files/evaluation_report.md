@@ -253,9 +253,30 @@ Rather than evaluating predictive skill or performance optimization, these findi
 
 ---
 
-## Future Work
+## Future Research
 
-### TODO:
+### Controlling Stochastic Variation in Model Outputs
+
+Future evaluations could reduce uncontrolled variability by replacing interactive human prompting with algorithmic prompting and fixed generation parameters. 
+Programmatic control over sampling settings, such as temperature, would allow differences in experimental outcomes to be attributed to stochastic variation  rather than procedural differences. This modification would support more rigorous comparison across runs and across models, while preserving the forward-only execution constraints of the study.
+
+
+### Comparison Across Sectors
+
+Future comparisons across sectors in the stock market could reveal model patterns given different environments. Factors such as risk management, report confidence, and behavioral changes following market events could be used to evaluate how decision-making differs across market scenarios. 
+
+### Decison-Making Differences Across Models
+
+Future work could examine differences in decision-making behavior across large language models under identical experimental conditions. Comparing model behavior could highlight differences in risk management, concentration, persistence, and responses to realized outcomes when acting as portfolio decision-makers.
+
+### Capital Scale and Risk Management Behavior
+
+Evaluations conducted under identical constraints, with the exception of increased starting capital, would likely produce different risk management behaviors. Future work could analyze how starting capital influences position sizing, diversification, and overall portfolio performance.
+
+### Post Hoc Sentiment Analysis of Generated Reports
+
+By analyzing the collected reports over the course of the experiment, future work could examine the relationship between expressed sentiment and realized portfolio performance over time. This analysis could also investigate divergences between generated report language and observed model behavior, including cases where narrative confidence did not align with portfolio actions that followed. In addition, the frequency and nature of model hallucinations, such as false rule assumptions or incorrect portfolio state descriptions, could be systematically documented and analyzed.
+
 
 ---
 
