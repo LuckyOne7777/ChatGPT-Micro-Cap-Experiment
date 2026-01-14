@@ -18,7 +18,7 @@
 
 ### Scope of Evaluation
 
-ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determeined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025. 
+ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025. 
 
 ### Nature of Contribution 
 
@@ -189,7 +189,7 @@ Human input was needed in the execution loop for inputting trades and prompting 
 The model was only allowed to buy tickers with market capitalizations equal to or less 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
 
 ### Close Data Only
-All data was calculated based of end-of-day trading data only.
+All data was calculated based on end-of-day trading data only.
 
 ### Financial Derivatives Prohibited
 
@@ -207,7 +207,7 @@ Throughout the experiment, the portfolio routinely consisted of 2-3 concentrated
 
 As shown in Figure 4 and Figure 6, FBIO and IINN were among the largest contributors to realized losses. Both tickers had relatively high trade frequencies, with FBIO having four buy-side trades and IINN receiving three.
 
-### Reliance on Bianry Outcomes
+### Reliance on Binary Outcomes
 
 Trade selection was characterized by exposure to event-driven catalysts (e.g., regulatory announcements), associated with large positive or negative outcomes. Comparatively limited exposure was observed in lower-volatility or incremental-return investing.
 
@@ -225,17 +225,17 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 Due to the limited experimental period, the data may not be representative of the model's behavior across different market regimes.
 
-### Market Captialization
+### Market Capitalization
 
-The evalution should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitlizations. 
+The evaluation should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitalizations. 
 
 ### Single-Run Evaluation
 
-The evaluation is based on a single experimental run and does not capture variability across repeated runs or alternative random intial conditions.
+The evaluation is based on a single experimental run and does not capture variability across repeated runs or alternative random initial conditions.
 
 ### Generalizations
 
-The evaluation or its conclusions should not be generalized to LLM trading as a whole. This conclusions of evauluation should be interpreted with the stated constraints and limitations in mind.
+The evaluation or its conclusions should not be generalized to LLM trading as a whole. This conclusions of evaluation should be interpreted with the stated constraints and limitations in mind.
 
 ### Prompt and Model Variability
 
@@ -255,6 +255,8 @@ Rather than evaluating predictive skill or performance optimization, these findi
 
 ## Future Research
 
+### TODO:
+
 ### Controlling Stochastic Variation in Model Outputs
 
 Future evaluations could reduce uncontrolled variability by replacing interactive human prompting with algorithmic prompting and fixed generation parameters. 
@@ -265,7 +267,7 @@ Programmatic control over sampling settings, such as temperature, would allow di
 
 Future comparisons across sectors in the stock market could reveal model patterns given different environments. Factors such as risk management, report confidence, and behavioral changes following market events could be used to evaluate how decision-making differs across market scenarios. 
 
-### Decison-Making Differences Across Models
+### Decision-Making Differences Across Models
 
 Future work could examine differences in decision-making behavior across large language models under identical experimental conditions. Comparing model behavior could highlight differences in risk management, concentration, persistence, and responses to realized outcomes when acting as portfolio decision-makers.
 
@@ -287,3 +289,5 @@ By analyzing the collected reports over the course of the experiment, future wor
 ## Appendix C. Prompt Templates and Versions
 
 ## Appendix D. Additional Tables and Figures
+
+
