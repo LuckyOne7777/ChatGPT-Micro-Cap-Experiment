@@ -217,6 +217,17 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 ### TODO:
 
+### Interpretation of Portfolio Performance
+
+### Portfolio Concentration
+
+### Risk and Loss Asymmetry
+
+### Position Persistence and Re-Entry
+
+### Holding Duration and Outcomes
+
+
 ---
 
 ## Limitations
