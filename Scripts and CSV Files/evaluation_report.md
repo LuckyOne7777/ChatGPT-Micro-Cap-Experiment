@@ -217,13 +217,14 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 ### TODO:
 
-### Interpretation of Portfolio Performance
-
 ### Portfolio Concentration
 
 ### Risk and Loss Asymmetry
 
+The model’s performance was characterized by pronounced loss asymmetry. As shown in Figure 2, the portfolio reached a maximum drawdown of approximately 50% over the experimental period. The largest losing ticker (ATYR) generated losses more than double the gains produced by the largest winning ticker (SLS). On the day of ATYR’s sharp decline, the portfolio experienced an approximately 40% single-day equity drop. Loss asymmetry was driven primarily by this single event, as other losing positions were comparatively small and did not materially affect portfolio-level outcomes.
+
 ### Position Persistence and Re-Entry
+
 
 ### Holding Duration and Outcomes
 
@@ -265,8 +266,6 @@ Rather than evaluating predictive skill or performance optimization, these findi
 ---
 
 ## Future Research
-
-### TODO:
 
 ### Controlling Stochastic Variation in Model Outputs
 
