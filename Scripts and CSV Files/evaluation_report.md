@@ -147,6 +147,17 @@ losses were less concentrated.
 
 As shown in Figure 4, realized losses were larger in magnitude than realized gains. The most significant downside outcome was attributable to ATYR, indicating that overall portfolio performance was strongly influenced by a small number of adverse position-level outcomes.
 
+![](images/episode_pcr_scatter.png)
+**Figure 5.** Peak Capture Ratio (exit PnL divided by peak unrealized PnL) plotted against peak unrealized profit for valid trade episode.
+
+Four episodes had null peak capture ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph. 
+
+Two other trade episodes were also excluded due to methodological reasons. The ATYR episode produced a valid capture ratio; however, realized outcomes were materially affected by execution constraints following a large overnight price gap, requiring a manual exit at the opening price and preventing normal stop-loss execution. As a result, the observed ratio reflects execution limitations rather than exit timing behavior. The FBIO episode, by contrast, represents a structural outlier in which a small unrealized peak preceded a large realized loss, producing an extreme capture ratio driven by denominator instability. FBIO is therefore excluded for interpretability, while both episodes are analyzed separately in the Discussion.
+
+The definition of a trade episode is provided in Appendix [Definitions]. The complete trade-episode table is available in Appendix [Episode Table].
+
+Figure 5 indicates that, for the remaining episodes, exits often captured a meaningful fraction of peak unrealized PnL. Peak Capture Ratios varied substantially across episodes, with no clear relationship between peak PnL magnitude and exit timing behavior.
+
 Taken together, these distributions indicate a highly concentrated return profile in which aggregate portfolio performance was driven by a limited number of large-magnitude position outcomes rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a small subset of positions accounting for a disproportionate share of total losses. As a result, overall performance was highly sensitive to individual ticker-level outcomes. On average, the portfolio consisted of 3.1 tickers on a given trading day.
 
 Summary statistics reported in this section are derived from the position-level (“Pure PnL”) tables provided in Appendix [Pure PnL Tables].
@@ -160,19 +171,19 @@ The distribution of FIFO lot-level outcomes (reported elsewhere) aligns with the
 ## Behavioral Analysis
 
 ![](images/holding_distubution.png)
-**Figure 5.** Distribution of holding periods across individual closed lots.
+**Figure 6.** Distribution of holding periods across individual closed lots.
 
-Figure 5 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 trading days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days.
+Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 trading days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days.
 
 ![](images/total_logged_days_by_ticker.png)
-**Figure 6.** Total individual ticker holding duration during trading days.
+**Figure 7.** Total individual ticker holding duration during trading days.
 
-Figure 6 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
+Figure 7 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
 
 Instead, individual ticker outcomes were more impactful for overall performance than holding duration.
 
 ![](images/repeated_exposure.png)
-**Figure 7.** Number of repeated buy-side trade entries per ticker.
+**Figure 8.** Number of repeated buy-side trade entries per ticker.
 
 Seven of the 22 tickers were purchased on multiple occasions. Notably, the three tickers with the lowest realized PnL (see Figure 4) were all subject to repeated buy-side entries. In contrast, the three highest-PnL tickers were each purchased only once during the experimental period.
 
@@ -205,7 +216,7 @@ Throughout the experiment, the portfolio routinely consisted of 2-3 concentrated
 
 ### Buying Past Losing Stocks
 
-As shown in Figure 4 and Figure 6, FBIO and IINN were among the largest contributors to realized losses. Both tickers had relatively high trade frequencies, with FBIO having four buy-side trades and IINN receiving three.
+As shown in Figure 4 and Figure 7, FBIO and IINN were among the largest contributors to realized losses. Both tickers had relatively high trade frequencies, with FBIO having four buy-side trades and IINN receiving three.
 
 ### Reliance on Binary Outcomes
 
@@ -259,7 +270,7 @@ The evaluation focuses on observable decision behaviors under consistent informa
 
 ## Conclusion
 
-Across the experimental period, portfolio equity outcomes were dominated by a small number of high-impact trades. High position concentration amplified exposure to individual ticker outcomes, with the ATYR position exerting a disproportionate influence on overall portfolio balance. Trading behavior exhibited persistence in position-level theses, as the model re-entered tickers despite prior exits, including cases with realized losses. Tickers subject to repeated buy-side entries accounted for the largest cumulative equity losses. In addition, the model held several positions for extended durations despite ultimately contributing minimally to overall portfolio performance, indicating that holding period length alone was not a reliable determinant of realized outcomes.
+Across the experimental period, portfolio equity outcomes were dominated by a small number of high-impact trades. High position concentration amplified exposure to individual ticker outcomes, with the ATYR position exerting a disproportionate influence on overall portfolio balance. Trading behavior exhibited persistence in position-level theses, as the model re-entered tickers despite prior exits, including cases with realized losses. Tickers subject to repeated buy-side entries accounted for the largest cumulative equity losses. In addition, the model held several positions for extended durations despite ultimately contributing minimally to overall portfolio performance, indicating that holding period length alone was not a reliable determinant of realized outcomes. Exit outcomes frequently occurred after a substantial portion of unrealized gains had accrued, though full capture of peak PnL was uncommon.
 
 Rather than evaluating predictive skill or performance optimization, these findings characterize how an LLM would allocate funds, manage exposure, and react to market volatility under conditions of limited capital and elevated risks of micro-cap trading.
 
