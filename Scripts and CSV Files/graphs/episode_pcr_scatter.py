@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 df = pd.read_csv("Scripts and CSV Files/Daily Updates.csv")
 df = df[df["Ticker"] != "TOTAL"]
+# remove ATYR for visual accuracy
+df = df[df["Ticker"] != "ATYR"]
 
 df["Date"] = pd.to_datetime(df["Date"])
 df = df.sort_values(["Ticker", "Date"])
