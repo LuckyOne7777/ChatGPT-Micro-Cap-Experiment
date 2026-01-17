@@ -66,9 +66,10 @@ episode_stats = episode_stats.drop("episode_id", axis=1)
 # Output (ALL episodes)
 # -----------------------------
 print("\n" + "=" * 60)
-print("Episode-level stats")
+print("EPISODE-LEVEL STATS")
 print("=" * 60)
 print(episode_stats.sort_values(
     ["peak_capture_ratio", "peak_pnl"],
     ascending=[True, False]
-))
+).to_string(index=False)
+)
