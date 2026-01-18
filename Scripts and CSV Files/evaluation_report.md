@@ -14,7 +14,7 @@
 
 ---
 
-## Scope & Contribution
+## Contribution & Scope
 
 ### Scope of Evaluation
 
@@ -236,6 +236,7 @@ The model’s performance was characterized by pronounced loss asymmetry. As sho
 
 ### Position Persistence and Re-Entry
 
+According to Figure 8, the model bought approximately 32% of tickers entered during the experimental period more than once (7 of 22). As shown in Figure 3, five of these repeatedly traded tickers generated negative cumulative realized PnL across all engagements. This pattern indicates persistence in position-level exposure, with re-entry occurring despite unfavorable prior outcomes rather than avoidance following realized losses.
 
 ### Holding Duration and Outcomes
 
@@ -282,7 +283,6 @@ Rather than evaluating predictive skill or performance optimization, these findi
 
 Future evaluations could reduce uncontrolled variability by replacing interactive human prompting with algorithmic prompting and fixed generation parameters. 
 Programmatic control over sampling settings, such as temperature, would allow differences in experimental outcomes to be attributed to stochastic variation  rather than procedural differences. This modification would support more rigorous comparison across runs and across models, while preserving the forward-only execution constraints of the study.
-
 
 ### Comparison Across Sectors
 
