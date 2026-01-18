@@ -150,7 +150,7 @@ As shown in Figure 4, realized losses were larger in magnitude than realized gai
 ![](images/episode_pcr_scatter.png)
 **Figure 5.** Peak Capture Ratio (exit PnL divided by peak unrealized PnL) plotted against peak unrealized profit for valid trade episode.
 
-Four episodes had null peak capture ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph. 
+Four episodes had null Peak Capture Ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph. 
 
 Two other trade episodes were also excluded due to methodological reasons. The ATYR episode produced a valid capture ratio; however, realized outcomes were materially affected by execution constraints following a large overnight price gap, requiring a manual exit at the opening price and preventing normal stop-loss execution. As a result, the observed ratio reflects execution limitations rather than exit timing behavior. The FBIO episode, by contrast, represents a structural outlier in which a small unrealized peak preceded a large realized loss, producing an extreme capture ratio driven by denominator instability. FBIO is therefore excluded for interpretability, while both episodes are analyzed separately in the Discussion.
 
@@ -164,7 +164,7 @@ Summary statistics reported in this section are derived from the position-level 
 
 Although trade execution occurred at the FIFO lot level, aggregation of realized outcomes at the position level reveals that only 10 of 22 tickers generated positive total PnL. Average losses exceeded average gains in magnitude, and the largest single position loss dominated overall results, consistent with exposure to binary, event-driven return dynamics.
 
-The distribution of FIFO lot-level outcomes (reported elsewhere) aligns with the concentration patterns observed at the ticker level, indicating that portfolio-level concentration emerged from a small number of large-magnitude realized exits rather than from uniformly poor trade execution.
+The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) aligns with the concentration patterns observed at the ticker level, indicating that portfolio-level concentration emerged from a small number of large-magnitude realized exits rather than from uniformly poor trade execution.
 
 ---
 
@@ -229,6 +229,8 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 ### TODO:
 
 ### Portfolio Concentration
+
+Throughtout the experiment, the model's portfolio consisted of 
 
 ### Risk and Loss Asymmetry
 
