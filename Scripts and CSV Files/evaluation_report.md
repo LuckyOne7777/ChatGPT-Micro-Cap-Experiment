@@ -4,7 +4,14 @@
 
 ## Abstract
 
-### TODO:
+Large language models (LLMs) are increasingly being applied to financial tasks; however, systematic research on LLMs acting as autonomous decision-making agents remains limited. This evaluation presents a forward-only, non-interventionist paper-trading study of ChatGPT acting as a portfolio decision-maker within the U.S. micro-cap equity market.
+
+Over the six-month experimental period, the model was prompted using daily trading updates and weekly portfolio evaluations. ChatGPT had complete control over portfolio decisions, while human input was strictly limited to prompting and trade execution. All decisions were generated ex ante and executed on a forward-only basis, with no discretionary overrides or performance optimization.
+
+The evaluation found that portfolio outcomes were heavily influenced by a small number of concentrated positions. Model behavior was characterized by high portfolio concentration, persistence in ticker-level theses, and asymmetric downside exposure. The model frequently re-entered tickers with prior realized losses and relied on event-driven outcomes, contributing disproportionately to overall portfolio drawdowns.
+
+Rather than optimizing performance or assessing predictive skill, this evaluation examines how an LLM allocates capital, manages risk, and exhibits trading behavior under conditions of limited capital and elevated risk within the micro-cap equity universe,
+providing insight into structural decision-making tendencies relevant to future LLM-based financial systems.
 
 ---
 
