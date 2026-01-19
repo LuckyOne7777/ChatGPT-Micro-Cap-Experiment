@@ -242,6 +242,14 @@ According to Figure 8, the model bought approximately 32% of tickers entered dur
 
 ### Holding Duration and Outcomes
 
+### Observational Analysis
+
+These observations are purely qualitative and are not analyzed quantitatively in the evaluation due to limitations of collected data and research scope.
+
+During execution, stop-loss levels were often adjusted upward prior to anticipated catalyst events. However, large adverse price moves occurred outside regular trading hours, rendering these stop-loss levels ineffective. The model appeared to persist in this behavior even after the substantial equity loss associated with the ATYR outcome.
+
+The model would occasionally hallucinate portfolio details or explicitly state rationale that was not grounded in the experimental setup during Deep Research reports. For example, in one weekly report the model referenced the absence of using hedging instruments, despite the use of derivatives and short positions being clearly prohibited throughout the experiment. This specific inconsistency reflects narrative generation rather than a change in execution logic. A representative excerpt is provided in Appendix ["Week 24 PDF: Page 16"].
+
 ---
 
 ## Limitations
