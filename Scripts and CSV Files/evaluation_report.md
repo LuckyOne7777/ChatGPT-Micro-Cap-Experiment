@@ -330,6 +330,340 @@ By analyzing the collected reports over the course of the experiment, future wor
 
 ## Appendix A. Metric Definitions and Formulas
 
+### A.0 Data Provenance and Reconstruction Notes
+
+#### A.0.1 Blended Data Collection
+
+Portfolio monitoring and recordkeeping in this study used a blended data collection process. Two primary artifacts were maintained:
+
+- `Trade Log.csv`, containing discrete buy and sell events including dates, shares, prices, and cost basis fields
+- `Daily Updates.csv`, containing end-of-day position snapshots including shares held and per-day PnL fields by ticker
+
+These sources were produced through an operational workflow combining manual updates and a standardized processing script. They were not generated as a single unified, transaction-perfect ledger. As a result, the analyses in this appendix should be interpreted as reconstructions derived from blended records rather than as broker-grade, audit-ready accounting statements.
+
+#### A.0.2 Source File Schemas
+
+The analyses in this report rely on the following source-file column schemas.
+
+Daily Updates.csv columns:
+
+- Date
+- Ticker
+- Shares
+- Buy Price
+- Cost Basis
+- Stop Loss
+- Current Price
+- Total Value
+- PnL
+- Action
+- Cash Balance
+- Total Equity
+
+Trade Log.csv columns:
+
+- Date
+- Ticker
+- Shares Bought
+- Buy Price
+- Cost Basis
+- PnL
+- Reason
+- Shares Sold
+- Sell Price
+
+#### A.0.3 Reconstruction Strategy vs Ground Truth
+
+Metrics in Appendix A are computed using reconstruction strategies designed to produce consistent, interpretable summaries of behavior:
+
+- FIFO lot-level realized exits are reconstructed from `Trade Log.csv` by matching sell transactions to prior buy transactions under a first-in, first-out convention
+- Position-level (Pure PnL) statistics are reconstructed by aggregating reconstructed FIFO lot exits to one row per ticker
+- Episode-level statistics (including Peak Capture Ratio) are reconstructed from `Daily Updates.csv` by identifying continuous holding intervals from the `Shares` field and summarizing the recorded daily `PnL` series
+- Equity-curve statistics (including Maximum Drawdown and Largest Run) are reconstructed from `Daily Updates.csv` using rows where `Ticker == "TOTAL"` and the `Total Equity` field
+
+These reconstructions approximate realized and unrealized dynamics for analytical purposes. They are not intended to be treated as definitive accounting of tax lots, brokerage fills, corporate actions, intraday execution effects, or all sources of slippage.
+
+#### A.0.4 Interpretation Guidance
+
+Because the underlying dataset is blended and reconstructed, the metrics are intended to support behavioral characterization (for example: concentration, persistence, re-entry frequency, and exit timing tendencies) rather than precise performance attribution.
+
+Where reconstruction choices matter, this appendix defines the conventions explicitly (FIFO lot matching, calendar-day holding duration, episode segmentation, and equity-curve segmentation) so that results can be reproduced under the same assumptions.
+
+### A.1 Equity Curve Metrics (Maximum Drawdown and Largest Run)
+
+#### A.1.1 Portfolio Equity Series Used
+
+Maximum drawdown and largest run calculations are computed from the reconstructed portfolio equity time series `Total Equity` derived from `Daily Updates.csv` where `Ticker == "TOTAL"`, with an additional baseline row inserted:
+
+- Baseline Date: 2025-06-27
+- Baseline Total Equity: 100.0
+
+If multiple records exist for the same Date, the last record for that Date is retained. The series is then sorted by Date in ascending order.
+
+#### A.1.2 Running Maximum
+
+The running maximum at time t is defined as the maximum observed portfolio equity from the start of the series through time t:
+
+- Running_Max_t = max(Total_Equity_0, Total_Equity_1, ..., Total_Equity_t)
+
+In code this is computed as the cumulative maximum of `Total Equity`.
+
+#### A.1.3 Drawdown Percentage
+
+Drawdown percentage at time t is defined as the percent deviation of current equity from the running maximum:
+
+- Drawdown_%_t = (Total_Equity_t / Running_Max_t − 1) × 100
+
+Drawdown values are non-positive when equity is below its prior peak.
+
+#### A.1.4 Maximum Drawdown
+
+Maximum drawdown is defined as the most negative drawdown percentage observed over the full equity series:
+
+- Max_Drawdown_% = min_t Drawdown_%_t
+
+The maximum drawdown date is the Date associated with the minimum Drawdown_% value.
+
+The maximum drawdown equity value is the `Total Equity` observed on that same Date.
+
+#### A.1.5 Largest Run (Run-Up from Local Minimum to Subsequent Peak)
+
+Largest Run is defined as the largest percentage increase from a local minimum (valley) to the subsequent peak prior to the next decline, based on a single-pass segmentation of the equity series.
+
+Algorithm summary:
+
+- Initialize the first observation as both the current local minimum and current peak
+- While equity continues to increase, the current peak is extended
+- When a decline is observed (current equity < current peak), the current run is closed and its gain is evaluated
+- The local minimum and peak are then reset to the current observation and the process continues
+- After iterating through the final observation, the last run (if ending on an increase) is also evaluated
+
+For a given run segment with local minimum value Min_Val and subsequent peak value Peak_Val, the run gain is:
+
+- Run_Gain_% = (Peak_Val − Min_Val) / Min_Val × 100
+
+Largest Run is the maximum Run_Gain_% across all such segments.
+
+Interpretation note:
+
+- This definition is segment-based and is determined by the reset-on-first-decline rule described above, rather than by searching over all possible minimum-to-maximum intervals.
+
+### A.2 FIFO Lot-Level Accounting
+
+#### A.2.1 FIFO Lot Definition
+
+A FIFO lot is defined as a discrete group of shares created by a single buy transaction in `Trade Log.csv`.
+
+In the reconstruction code, each buy transaction creates one open lot with:
+
+- Entry_Date: the transaction `Date`
+- Shares: `Shares Bought`
+- Entry_Price: `Cost Basis / Shares Bought` (per-share)
+
+Lots are ordered chronologically by Entry_Date and are matched to sells using a first-in, first-out accounting convention.
+
+#### A.2.2 FIFO Lot-Level Realized Exit
+
+A FIFO lot-level realized exit occurs when some or all shares from one or more open FIFO lots are closed via a sell transaction.
+
+In the reconstruction code, when a sell occurs:
+
+- The sell quantity (`Shares Sold`) is allocated to the oldest open lots first
+- Partial lot closures are permitted
+- Each partial closure is recorded as a distinct realized exit record
+
+For each realized exit record, the following fields are recorded:
+
+- Ticker: security identifier
+- Entry_Date: date the lot was opened
+- Exit_Date: date the shares were sold
+- Shares: number of shares closed from the lot
+- Entry_Price: per-share entry price of the lot
+- Exit_Price: per-share exit price (taken from `Sell Price`)
+- PnL: realized profit or loss in USD, computed as `Shares × (Exit_Price − Entry_Price)`
+- Holding_Days: calendar days between Entry_Date and Exit_Date, computed as `(Exit_Date − Entry_Date).days`
+
+All FIFO lot-level performance metrics are computed from this realized exit table.
+
+### A.3 Position-Level Aggregation (Pure PnL)
+
+#### A.3.1 Pure PnL Definition
+
+Pure PnL aggregates FIFO lot-level realized exits to the ticker (position) level.
+
+Each ticker is represented by a single row summarizing all realized FIFO lot exits for that security.
+
+#### A.3.2 Position-Level Metrics
+
+For each ticker, the following metrics are computed from the FIFO lot exit table:
+
+- PnL
+  Sum of realized PnL across all FIFO lot exit records for the ticker
+
+- Holding_Days
+  Calendar-day span from the earliest Entry_Date to the latest Exit_Date for the ticker, computed as `(max(Exit_Date) − min(Entry_Date)).days`
+
+- Avg_Position_Size
+  Computed as `np.average(Shares × Entry_Price, weights=Shares)`, using the FIFO lot exit records for the ticker
+  Equivalently: `sum( Shares_i × (Shares_i × Entry_Price_i) ) / sum(Shares_i)`
+
+- Num_Lot_Exits
+  Number of FIFO lot exit records for the ticker
+
+Pure PnL metrics are used to analyze concentration and ticker-level contribution to realized performance under the stated reconstruction conventions.
+
+### A.4 Outcome Classification
+
+#### A.4.1 Wins and Losses
+
+For any metric set computed using the reconstructed tables:
+
+- Wins are observations where `PnL > 0`
+- Losses are observations where `PnL < 0`
+- Zero-PnL observations (`PnL == 0`) are neither wins nor losses
+
+#### A.4.2 Treatment of Zero-PnL Observations
+
+The metrics define:
+
+- Count as the total number of observations, including any zero-PnL observations
+- Win Rate using Count as the denominator
+
+Average and median win/loss statistics are computed only over the corresponding subsets (wins or losses).
+
+### A.5 Sample Size
+
+#### A.5.1 Count
+
+Count is the total number of observations in the relevant input table:
+
+- FIFO lot-level metrics: number of FIFO lot exit records
+- Position-level metrics: number of ticker rows in the Pure PnL table
+
+### A.6 Win Rate
+
+#### A.6.1 Definition
+
+Win Rate is defined as the fraction of observations with positive realized PnL:
+
+Win Rate = Number of observations with `PnL > 0` / Total number of observations
+
+The denominator includes any zero-PnL observations.
+
+### A.7 Magnitude Metrics
+
+#### A.7.1 Average Win
+
+Average Win is the arithmetic mean of `PnL` over observations with `PnL > 0`.
+
+#### A.7.2 Median Win
+
+Median Win is the median of `PnL` over observations with `PnL > 0`.
+
+#### A.7.3 Average Loss
+
+Average Loss is the arithmetic mean of `PnL` over observations with `PnL < 0`.
+
+Loss values are reported as negative numbers.
+
+#### A.7.4 Median Loss
+
+Median Loss is the median of `PnL` over observations with `PnL < 0`.
+
+### A.8 Profit Factor
+
+#### A.8.1 Definition
+
+Profit Factor is defined as:
+
+Profit Factor = Sum(`PnL` over wins) / absolute value of Sum(`PnL` over losses)
+
+If Sum(`PnL` over losses) equals zero, Profit Factor is reported as infinite.
+
+### A.9 Expectancy
+
+#### A.9.1 Definition
+
+Expectancy represents the expected `PnL` per observation:
+
+Expectancy = (Average Win × Win Rate) + (Average Loss × (1 − Win Rate))
+
+Expectancy is expressed in USD per observation.
+
+### A.10 Holding Duration
+
+#### A.10.1 Average Holding Days
+
+Average Holding Days is the arithmetic mean of the relevant holding-duration column:
+
+- FIFO lot-level metrics: mean of lot-level Holding_Days values in calendar days
+- Position-level metrics: mean of ticker-level Holding_Days values
+
+Holding days are computed as calendar-day differences and do not adjust for non-trading days.
+
+### A.11 Repeated Exposure
+
+#### A.11.1 Definition
+
+A ticker is classified as having repeated exposure if it has more than one FIFO lot exit record during the experimental period.
+
+This reflects multiple realized lot exits for the same ticker and does not necessarily imply multiple distinct entry episodes.
+
+### A.12 Portfolio Breadth and Allocation
+
+#### A.12.1 Average Tickers Held Per Day
+
+Average Tickers Held Per Day is computed from `Daily Updates.csv` (excluding rows where `Ticker == "TOTAL"`) as:
+
+- For each Date, count the number of unique tickers present in the file for that Date
+- Take the mean of that daily unique-ticker count across all Dates
+
+Because `Daily Updates.csv` includes only tickers with `Shares > 0`, this measure equals the average number of tickers held per trading day.
+
+#### A.12.2 Average Ticker Cost Basis
+
+Average Ticker Cost Basis is computed from `Daily Updates.csv` (excluding rows where `Ticker == "TOTAL"`) as the arithmetic mean of the `Cost Basis` column across all remaining ticker-day rows.
+
+This is a ticker-day average based on the daily snapshot file and its row conventions.
+
+### A.13 Trade Episodes
+
+#### A.13.1 Trade Episode Definition
+
+A trade episode is defined using `Daily Updates.csv` as a continuous interval where `Shares > 0` for a given ticker.
+
+- An episode begins on the first Date where `Shares > 0` following a prior Date where `Shares == 0` (or no prior record)
+- An episode ends on the last Date prior to a return to `Shares == 0`
+- Episodes are identified independently for each ticker
+
+### A.14 Episode-Level Metrics
+
+#### A.14.1 Episode Statistics
+
+For each ticker episode, the following are computed from the subset of rows where `Shares > 0`:
+
+- start_date: first Date of the episode
+- end_date: last Date of the episode
+- peak_pnl: maximum value of the `PnL` field within the episode
+- exit_pnl: last value of the `PnL` field within the episode (PnL on the final episode day)
+- duration_days: calendar-day span from start_date to end_date, computed as `(max(Date) − min(Date)).days`
+
+All episode PnL quantities refer to the recorded daily `PnL` field in `Daily Updates.csv`.
+
+### A.15 Peak Capture Ratio
+
+#### A.15.1 Definition
+
+Peak Capture Ratio is defined as:
+
+Peak Capture Ratio = exit_pnl / peak_pnl
+
+#### A.15.2 Validity Constraints
+
+If `peak_pnl <= 0`, Peak Capture Ratio is set to null.
+
+This rule is applied to remove undefined or non-informative ratios under the stated episode convention.
+
 ## Appendix B. Representative LLM Outputs
 
 ## Appendix C. Prompt Templates and Versions
