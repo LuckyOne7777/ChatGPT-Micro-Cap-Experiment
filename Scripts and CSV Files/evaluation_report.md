@@ -1,4 +1,4 @@
-# Evaluating ChatGPT as a Portfolio Decision-Maker in Microcap Equities
+# Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities
 
 *An Exploratory, Forward-Only Paper Trading Study*
 
@@ -10,7 +10,15 @@
 
 ## Introduction
 
-### TODO:
+Generative artificial intelligence has taken the world by storm in the last few years. Large Language Models (LLMs) are now becoming a regular tool in society. While machine learning has been utilized in finance for decades, systematic research into the behavior of LLMs as autonomous decision-makers in financial contexts remains in its early stages.
+
+Finance serves as a valuable frontier for LLM research due to the complexity and constant evolution of equity markets. In these environments, LLMs can quantitatively evaluate many factors that affect decision-making and behavior under uncertainty.
+
+In highly efficient markets, particularly U.S. large-cap equities, opportunities for sustained informational advantage are limited. Once information becomes public, stock prices adjust rapidly, reducing the likelihood that superior information alone can generate consistent excess returns. Nevertheless, evaluating LLM behavior in such environments remains useful for understanding how these models allocate capital, manage risk, and respond to uncertainty when informational edge is minimal.
+
+This study focuses on micro-cap equities. Micro-cap stocks are characterized by higher volatility, lower liquidity, and limited analyst coverage, resulting in greater informational asymmetry. Trading in this environment provides a setting in which information processing, narrative interpretation, and risk management decisions have amplified consequences.
+
+By constraining ChatGPT to operate exclusively within this environment, this evaluation seeks to observe how an LLM behaves when informational efficiency is weaker and downside risk is elevated. Rather than prioritizing performance or optimization, this evaluation seeks to identify decision-making behavior, portfolio construction tendencies, and observed failure modes under conditions of limited capital and heightened risk.
 
 ---
 
@@ -79,7 +87,7 @@ The large language model ChatGPT was used as a decision-making engine for the po
 
 No discretionary judgment was applied to model outputs. Human involvement was limited to prompting the model and executing requested trades exactly as the model instructed. The decision process was fully specified in advance and remained constant throughout the study period.
 
-### Micro-cap Focus
+### Micro-Cap Focus
 
 The model was restricted to purchasing equities within the microcapitalization universe (market capitalization ≤ $300 million). This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
 
