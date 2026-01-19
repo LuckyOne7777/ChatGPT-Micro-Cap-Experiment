@@ -172,7 +172,7 @@ Figure 5 indicates that, for the remaining episodes, exits often captured a mean
 
 Taken together, these distributions indicate a highly concentrated return profile in which aggregate portfolio performance was driven by a limited number of large-magnitude position outcomes rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a small subset of positions accounting for a disproportionate share of total losses. As a result, overall performance was highly sensitive to individual ticker-level outcomes. On average, the portfolio consisted of 3.1 tickers on a given trading day.
 
-Summary statistics reported in this section are derived from the position-level (“Pure PnL”) tables provided in Appendix [Pure PnL Tables].
+Summary statistics reported in this section are derived from the position-level (“Pure PnL”) tables provided in Appendix D.3-D.4.
 
 Although trade execution occurred at the FIFO lot level, aggregation of realized outcomes at the position level reveals that only 10 of 22 tickers generated positive total PnL. Average losses exceeded average gains in magnitude, and the largest single position loss dominated overall results, consistent with exposure to binary, event-driven return dynamics.
 
@@ -334,4 +334,166 @@ By analyzing the collected reports over the course of the experiment, future wor
 
 ## Appendix C. Prompt Templates and Versions
 
-## Appendix D. Additional Tables and Figures
+## Appendix D. Tables and Metrics
+
+### D.1: FIFO LOT-LEVEL PERFORMANCE METRICS
+
+```text
+count                         : 46
+win_rate                      : 0.5000
+avg_win                       : 3.0087
+median_win                    : 1.6200
+avg_loss                      : -3.8265
+median_loss                   : -1.4700
+profit_factor                 : 0.8220
+expectancy                    : -0.4089
+avg_holding_days              : 17.8043
+```
+
+### D.2: FIFO LOT-LEVEL REALIZED EXITS
+
+```text
+Ticker Entry_Date  Exit_Date  Shares  Entry_Price  Exit_Price        PnL  Holding_Days
+  ABEO 2025-06-30 2025-08-01    2.00         5.77        6.37   1.200000            32
+  ABEO 2025-06-30 2025-09-15    4.00         5.77        6.40   2.520000            77
+  ACTU 2025-07-21 2025-08-18    6.00         5.75        8.12  14.220000            28
+  ALDX 2025-09-22 2025-09-29    2.00         4.93        5.15   0.440000             7
+  ALDX 2025-09-22 2025-10-06    3.00         4.93        5.78   2.550001            14
+  ALDX 2025-09-22 2025-10-06    1.00         4.93        5.78   0.850000            14
+  ALDX 2025-09-24 2025-10-06    1.00         5.05        5.78   0.730000            12
+  ALDX 2025-09-25 2025-10-06    1.00         4.95        5.78   0.830000            11
+  ATYR 2025-08-14 2025-09-12    2.00         5.09        5.90   1.620000            29
+  ATYR 2025-08-14 2025-09-15    6.00         5.09        1.26 -22.980000            32
+  ATYR 2025-09-02 2025-09-15    4.00         5.44        1.26 -16.720000            13
+  AXGN 2025-08-18 2025-09-08    2.00        14.96       16.10   2.280000            21
+  AYTU 2025-10-20 2025-11-06   10.00         2.26        1.80  -4.600000            17
+  AYTU 2025-11-10 2025-11-17    8.00         2.01        2.09   0.639999             7
+  AZTR 2025-07-07 2025-07-29   55.00         0.25        0.20  -2.750000            22
+  CADL 2025-06-30 2025-07-21    5.00         5.04        6.59   7.750000            21
+  CSAI 2025-06-30 2025-07-07   15.00         1.90        2.28   5.700000             7
+  ESPR 2025-08-07 2025-08-18    2.00         1.91        2.07   0.320000            11
+  FBIO 2025-09-04 2025-09-22    1.00         2.85        3.80   0.950000            18
+  FBIO 2025-09-08 2025-09-22    1.64         3.80        3.80   0.000000            14
+  FBIO 2025-09-08 2025-10-01    0.36         3.80        2.47  -0.478800            23
+  FBIO 2025-09-15 2025-10-01    5.00         3.85        2.47  -6.900000            16
+  FBIO 2025-09-29 2025-10-01    1.64         3.90        2.47  -2.345200             2
+  FDMT 2025-09-08 2025-09-22    1.00         7.35        6.65  -0.700000            14
+  FDMT 2025-09-08 2025-09-23    1.00         7.35        7.51   0.160000            15
+  IINN 2025-07-08 2025-07-28    6.00         1.50        1.41  -0.540000            20
+  IINN 2025-07-08 2025-08-08   14.00         1.50        1.10  -5.600000            31
+  IINN 2025-08-01 2025-08-08    2.00         1.74        1.10  -1.280000             7
+  IINN 2025-08-18 2025-09-02   10.00         1.25        1.16  -0.900000            15
+  JSPR 2025-12-22 2025-12-26   20.00         1.88        1.83  -0.999999             4
+  MBOT 2025-10-20 2025-10-28    8.00         2.85        2.30  -4.399999             8
+  MIST 2025-10-13 2025-11-06   17.00         2.03        1.70  -5.610000            24
+  MIST 2025-10-27 2025-11-06    1.00         1.90        1.70  -0.200000            10
+  MIST 2025-11-10 2025-12-26   14.00         1.75        2.08   4.620000            46
+  OKYO 2025-10-06 2025-10-13   10.00         2.08        1.99  -0.899999             7
+   SLS 2025-11-17 2025-12-22    8.00         1.41        2.42   8.080001            35
+   SLS 2025-11-17 2025-12-26    5.00         1.41        2.91   7.500001            39
+  SNGX 2025-09-15 2025-09-22    5.00         2.86        2.56  -1.499999             7
+  SPRO 2025-09-22 2025-09-25   12.00         2.01        1.95  -0.720000             3
+  SPRO 2025-09-29 2025-10-13    7.00         1.89        2.35   3.219999            14
+  SPRO 2025-09-29 2025-10-20    6.00         1.89        2.22   1.980000            21
+  SPRO 2025-10-10 2025-10-20    9.00         2.38        2.22  -1.440000            10
+  TLSA 2025-10-06 2025-10-08    2.00         1.99        2.25   0.520000             2
+  TLSA 2025-10-06 2025-10-08    2.00         1.99        2.25   0.520000             2
+  TLSA 2025-10-06 2025-10-20    4.00         1.99        1.95  -0.160000            14
+  VTGN 2025-11-10 2025-12-03    6.00         4.01        3.60  -2.460001            23
+```
+
+### D.3: PURE PnL METRICS (POSITION-LEVEL)
+
+```text
+count                         : 22
+win_rate                      : 0.4545
+avg_win                       : 5.8890
+median_win                    : 4.5600
+avg_loss                      : -6.1562
+median_loss                   : -2.6050
+profit_factor                 : 0.7972
+expectancy                    : -0.6811
+avg_holding_days              : 25.5909
+```
+
+### D.4: PURE PnL BY TICKER (ONE ROW PER POSITION)
+
+```text
+Ticker        PnL  Holding_Days  Avg_Position_Size  Num_Lot_Exits
+   SLS  15.580001          39.0           9.653077            2.0
+  ACTU  14.220000          28.0          34.500000            1.0
+  CADL   7.750000          21.0          25.200000            1.0
+  CSAI   5.700000           7.0          28.500000            1.0
+  ALDX   5.400001          14.0           9.877500            5.0
+  ABEO   3.720000          77.0          19.233333            2.0
+  SPRO   3.040000          28.0          18.907941            4.0
+  AXGN   2.280000          21.0          29.920000            1.0
+  TLSA   0.880000          14.0           5.970000            3.0
+  ESPR   0.320000          11.0           3.820000            1.0
+  FDMT  -0.540000          15.0           7.350000            2.0
+  OKYO  -0.899999           7.0          20.799999            1.0
+  JSPR  -0.999999           4.0          37.600000            1.0
+  MIST  -1.190000          74.0          29.111562            3.0
+  SNGX  -1.499999           7.0          14.299999            1.0
+  VTGN  -2.460001          23.0          24.060001            1.0
+  AZTR  -2.750000          22.0          13.750000            1.0
+  AYTU  -3.960001          28.0          19.702222            2.0
+  MBOT  -4.399999           8.0          22.799999            1.0
+  IINN  -8.320000          56.0          14.998750            4.0
+  FBIO  -8.774000          27.0          12.479502            5.0
+  ATYR -38.080000          32.0          24.220000            3.0
+```
+
+### D.5: TOP 3 WINNING FIFO LOT EXITS
+
+```text
+Ticker Entry_Date  Exit_Date  Shares  Entry_Price  Exit_Price       PnL  Holding_Days
+  ACTU 2025-07-21 2025-08-18     6.0         5.75        8.12 14.220000            28
+   SLS 2025-11-17 2025-12-22     8.0         1.41        2.42  8.080001            35
+  CADL 2025-06-30 2025-07-21     5.0         5.04        6.59  7.750000            21
+```
+
+### D.6: TOP 3 LOSING FIFO LOT EXITS
+
+```text
+Ticker Entry_Date  Exit_Date  Shares  Entry_Price  Exit_Price    PnL  Holding_Days
+  ATYR 2025-08-14 2025-09-15     6.0         5.09        1.26 -22.98            32
+  ATYR 2025-09-02 2025-09-15     4.0         5.44        1.26 -16.72            13
+  FBIO 2025-09-15 2025-10-01     5.0         3.85        2.47  -6.90            16
+```
+
+### D.7: EPISODE-LEVEL STATS
+
+```text
+Ticker start_date   end_date  peak_pnl  exit_pnl  duration_days  peak_capture_ratio
+  FBIO 2025-09-04 2025-10-01      1.44    -10.41             27           -7.229167
+  JSPR 2025-12-22 2025-12-24      0.60     -1.00              2           -1.666667
+  OKYO 2025-10-06 2025-10-10      1.60     -1.30              4           -0.812500
+  VTGN 2025-11-10 2025-12-02      5.34     -2.46             22           -0.460674
+  TLSA 2025-10-06 2025-10-17      1.80     -0.24             11           -0.133333
+  MIST 2025-10-13 2025-12-24     16.80      4.48             72            0.266667
+  SPRO 2025-09-22 2025-10-17      6.11      1.79             25            0.292962
+  ALDX 2025-09-22 2025-10-06      4.76      1.69             14            0.355042
+  ABEO 2025-06-30 2025-09-15      6.18      2.52             77            0.407767
+  AYTU 2025-10-20 2025-11-14      1.20      0.64             25            0.533333
+   SLS 2025-11-17 2025-12-24     12.35      7.15             37            0.578947
+  AXGN 2025-08-18 2025-09-05      2.60      2.04             18            0.784615
+  ACTU 2025-07-21 2025-08-15     17.52     14.22             25            0.811644
+  ESPR 2025-08-07 2025-08-15      0.32      0.28              8            0.875000
+  CADL 2025-06-30 2025-07-18      9.40      8.50             18            0.904255
+  CSAI 2025-06-30 2025-07-03      6.00      5.70              3            0.950000
+  ATYR 2025-08-14 2025-09-12      8.23      8.23             29            1.000000
+  FDMT 2025-09-08 2025-09-22      0.05      0.05             14            1.000000
+  AZTR 2025-07-07 2025-07-28      0.00     -2.75             21                 NaN
+  IINN 2025-07-09 2025-08-29      0.00     -1.00             51                 NaN
+  SNGX 2025-09-15 2025-09-19     -0.25     -0.85              4                 NaN
+  MBOT 2025-10-20 2025-10-28     -0.40     -4.40              8                 NaN
+```
+
+### D.8: OTHER METRICS
+
+```text
+AVERAGE TICKERS HELD PER DAY: 3.13
+
+AVERAGE TICKER COST BASIS (USD): 25.28
+```
