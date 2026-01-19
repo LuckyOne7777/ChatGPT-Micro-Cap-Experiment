@@ -26,16 +26,16 @@ By constraining ChatGPT to operate exclusively within this environment, this eva
 
 ### Scope of Evaluation
 
-ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025. 
+ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025.
 
-### Nature of Contribution 
+### Nature of Contribution
 
 Forward-only evaluation of ChatGPT's performance and behavior as a portfolio decision-maker within the experimental setup.
 The study contributes detailed documentation of decision behavior, execution results, and observed failure modes in the limited information and high volatility of micro-cap equities.
 
 ### Non-Claims
 
-The evaluation is not a general test of LLM trading ability. 
+The evaluation is not a general test of LLM trading ability.
 Parameters were not optimized to improve behavior or performance during the experimental period. The setup is not intended as a deployable trading algorithm to generate returns.
 
 ---
@@ -49,7 +49,6 @@ Portfolio and trade log data were updated manually after each NYSE trading day u
 Human involvement was strictly limited to data entry and trade execution. No discretionary overrides or optimizations were applied to model-generated decisions.
 
 On a limited number of occasions, daily updates could not be performed following market close. In these cases, the missed update was processed using only past data on that market day. To prevent lookahead bias, the model was explicitly constrained to rely solely on the provided input and was prohibited from accessing external or future information.
-
 
 ### Weekly Research Cycle and Execution Exceptions
 
@@ -103,8 +102,6 @@ Weekly research reports and output summaries generated during the study were arc
 
 All information supplied to the model was limited to data available as of the close of the relevant trading day. No future market data, post-close information, or subsequent outcomes were included in any model input.
 
-
-
 **NOTE: Trade-level statistics were computed at the FIFO lot level, with partial exits treated as independent realized lots rather than as distinct position entries.**
 
 ### Bias Mitigation and Validity Controls
@@ -148,7 +145,7 @@ Full Individual Trade Table found in Appendix[Individual Trade Table]
 
 Figure 3 shows 10 of the 22 tickers the model bought within the experimental period generated profits.
 Profits among tickers generally had concentrated profits; with the exception of ATYR,
-losses were less concentrated. 
+losses were less concentrated.
 
 ![](images/top_losses_vs_wins.png)
 **Figure 4.** Top realized PnL (USD) ticker wins vs. losses.
@@ -156,9 +153,9 @@ losses were less concentrated.
 As shown in Figure 4, realized losses were larger in magnitude than realized gains. The most significant downside outcome was attributable to ATYR, indicating that overall portfolio performance was strongly influenced by a small number of adverse position-level outcomes.
 
 ![](images/episode_pcr_scatter.png)
-**Figure 5.** Peak Capture Ratio (exit PnL divided by peak unrealized PnL) plotted against peak unrealized profit for valid trade episode.
+**Figure 5.** Peak Capture Ratio (exit PnL divided by peak unrealized PnL) plotted against peak unrealized profit for valid trade episodes.
 
-Four episodes had null Peak Capture Ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph. 
+Four episodes had null Peak Capture Ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph.
 
 Two other trade episodes were also excluded due to methodological reasons. The ATYR episode produced a valid capture ratio; however, realized outcomes were materially affected by execution constraints following a large overnight price gap, requiring a manual exit at the opening price and preventing normal stop-loss execution. As a result, the observed ratio reflects execution limitations rather than exit timing behavior. The FBIO episode, by contrast, represents a structural outlier in which a small unrealized peak preceded a large realized loss, producing an extreme negative capture ratio driven by denominator instability. FBIO is therefore excluded for interpretability.
 
@@ -181,7 +178,7 @@ The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) a
 ![](images/holding_distribution.png)
 **Figure 6.** Distribution of holding periods across individual closed lots.
 
-Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days calandar days.
+Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days calendar days.
 
 ![](images/total_logged_days_by_ticker.png)
 **Figure 7.** Total individual ticker holding duration during trading days.
@@ -204,12 +201,15 @@ This pattern suggests persistence in position-level theses, with the model exhib
 ## Operational Constraints
 
 ### Human Input Required
-Human input was needed in the execution loop for inputting trades and prompting for each trading day. 
+
+Human input was needed in the execution loop for inputting trades and prompting for each trading day.
 
 ### Micro-Cap Stocks Only
+
 The model was only allowed to buy tickers with market capitalizations equal to or less than 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
 
 ### Close Data Only
+
 All data was calculated based on end-of-day trading data only.
 
 ### Financial Derivatives Prohibited
@@ -238,7 +238,7 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 ### Portfolio Concentration
 
-Throughout the experiment, the model's portfolio consisted of three tickers for trading days on average. The average cost basis for a ticker position was $25.28 (25% of starting capital). This indictates the model preferred high concentration positions with limited portfolio diversity. This allocation pattern reflects a preference for highly concentrated positions and limited diversification, resulting in substantial exposure to individual ticker-level movements.  
+Throughout the experiment, the model's portfolio consisted of three tickers for trading days on average. The average cost basis for a ticker position was $25.28 (25% of starting capital). This indicates the model preferred high concentration positions with limited portfolio diversity. This allocation pattern reflects a preference for highly concentrated positions and limited diversification, resulting in substantial exposure to individual ticker-level movements.  
 
 ### Risk and Loss Asymmetry
 
@@ -270,7 +270,7 @@ Due to the limited experimental period, the data may not be representative of th
 
 ### Market Capitalization
 
-The evaluation should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitalizations. 
+The evaluation should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitalizations.
 
 ### Single-Run Evaluation
 
@@ -282,7 +282,7 @@ The evaluation or its conclusions should not be generalized to LLM trading as a 
 
 ### Prompt and Model Variability
 
-The experimental setup relied on interactive use of the publicly available ChatGPT interface, introducing sources of variability that could not be fully controlled. Prompt templates evolved modestly to clarify existing constraints, newer model versions were adopted as they became available, and generation parameters such as temperature were not explicitly fixed. 
+The experimental setup relied on interactive use of the publicly available ChatGPT interface, introducing sources of variability that could not be fully controlled. Prompt templates evolved modestly to clarify existing constraints, newer model versions were adopted as they became available, and generation parameters such as temperature were not explicitly fixed.
 
 The evaluation focuses on observable decision behaviors under consistent informational and procedural constraints rather than on comparisons across specific model configurations.
 
@@ -300,12 +300,12 @@ Taken together, these results suggest that, when placed in a capital allocation 
 
 ### Controlling Stochastic Variation in Model Outputs
 
-Future evaluations could reduce uncontrolled variability by replacing interactive human prompting with algorithmic prompting and fixed generation parameters. 
+Future evaluations could reduce uncontrolled variability by replacing interactive human prompting with algorithmic prompting and fixed generation parameters.
 Programmatic control over sampling settings, such as temperature, would allow differences in experimental outcomes to be attributed to stochastic variation  rather than procedural differences. This modification would support more rigorous comparison across runs and across models, while preserving the forward-only execution constraints of the study.
 
 ### Comparison Across Sectors
 
-Future comparisons across sectors in the stock market could reveal model patterns given different environments. Factors such as risk management, report confidence, and behavioral changes following market events could be used to evaluate how decision-making differs across market scenarios. 
+Future comparisons across sectors in the stock market could reveal model patterns given different environments. Factors such as risk management, report confidence, and behavioral changes following market events could be used to evaluate how decision-making differs across market scenarios.
 
 ### Decision-Making Differences Across Models
 
@@ -319,7 +319,6 @@ Evaluations conducted under identical constraints, with the exception of increas
 
 By analyzing the collected reports over the course of the experiment, future work could examine the relationship between expressed sentiment and realized portfolio performance over time. This analysis could also investigate divergences between generated report language and observed model behavior, including cases where narrative confidence did not align with portfolio actions that followed. In addition, the frequency and nature of model hallucinations, such as false rule assumptions or incorrect portfolio state descriptions, could be systematically documented and analyzed.
 
-
 ---
 
 ## Appendix A. Metric Definitions and Formulas
@@ -329,5 +328,3 @@ By analyzing the collected reports over the course of the experiment, future wor
 ## Appendix C. Prompt Templates and Versions
 
 ## Appendix D. Additional Tables and Figures
-
-
