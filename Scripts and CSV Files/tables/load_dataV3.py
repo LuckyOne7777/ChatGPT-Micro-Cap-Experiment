@@ -2,19 +2,6 @@ import pandas as pd
 import numpy as np
 
 # ==========================================================
-# AVERAGE NUMBER OF TICKERS HELD PER DAY
-# ==========================================================
-def avg_tickers_per_day():
-    df = pd.read_csv(
-        "Scripts and CSV Files/Daily Updates.csv",
-        parse_dates=["Date"]
-    )
-    df = df[df["Ticker"] != "TOTAL"]
-
-    return df.groupby("Date")["Ticker"].nunique().mean()
-
-
-# ==========================================================
 # BUILD FIFO LOT-LEVEL REALIZED EXITS
 # ==========================================================
 def build_fifo_lot_exits(trade_log: pd.DataFrame) -> pd.DataFrame:
@@ -122,7 +109,7 @@ def compute_metrics(df: pd.DataFrame, pnl_col: str, holding_col: str):
         "median_loss": median_loss,
         "profit_factor": profit_factor,
         "expectancy": expectancy,
-        "avg_holding_days": df[holding_col].mean()
+        "avg_holding_days": df[holding_col].mean(),
     }
 
 
@@ -164,6 +151,11 @@ def compute_trade_metrics(trade_log: pd.DataFrame):
 
     top_3_winners = winners.nlargest(3, "PnL")
     top_3_losers = losers.nsmallest(3, "PnL")
+    daily_csv = pd.read_csv(
+        "Scripts and CSV Files/Daily Updates.csv",
+        parse_dates=["Date"]
+    )
+    daily_csv = daily_csv[daily_csv["Ticker"] != "TOTAL"]
 
     return {
         "lot_exits": lot_exits,
@@ -172,7 +164,9 @@ def compute_trade_metrics(trade_log: pd.DataFrame):
         "pure_pnl_metrics": pure_pnl_metrics,
         "repeated_tickers": repeated_tickers,
         "top_3_winners": top_3_winners,
-        "top_3_losers": top_3_losers
+        "top_3_losers": top_3_losers,
+        "avg_ticker_cost_basis": daily_csv["Cost Basis"].mean(),
+        "avg_tickers_held_per_day": daily_csv.groupby("Date")["Ticker"].nunique().mean(),
     }
 
 
@@ -201,7 +195,12 @@ def print_results(results: dict):
     print("\n" + "=" * 60)
     print("AVERAGE TICKERS HELD PER DAY")
     print("=" * 60)
-    print(f"{avg_tickers_per_day():.2f}")
+    print(f"{results["avg_tickers_held_per_day"]:.2f}")
+
+    print("\n" + "=" * 60)
+    print("AVERAGE TICKER COST BASIS (USD)")
+    print("=" * 60)
+    print(f"{float(results["avg_ticker_cost_basis"]):.2f}")
 
     print("\n" + "=" * 60)
     print("PURE PnL BY TICKER (ONE ROW PER POSITION)")
