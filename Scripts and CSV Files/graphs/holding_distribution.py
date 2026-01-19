@@ -46,7 +46,7 @@ def plot_holding_period_distribution(trades_df: pd.DataFrame, bins: int = 10):
     plt.xlabel("Holding Days")
     plt.ylabel("Lot Exit Count")
     plt.savefig(
-        "Scripts and CSV Files/images/holding_distubution.png",
+        "Scripts and CSV Files/images/holding_distribution.png",
         dpi=300,
         bbox_inches="tight"
     )
