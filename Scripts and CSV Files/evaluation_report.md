@@ -178,7 +178,7 @@ The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) a
 
 ## Behavioral Analysis
 
-![](images/holding_distubution.png)
+![](images/holding_distribution.png)
 **Figure 6.** Distribution of holding periods across individual closed lots.
 
 Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days calandar days.
