@@ -152,7 +152,7 @@ As shown in Figure 4, realized losses were larger in magnitude than realized gai
 
 Four episodes had null Peak Capture Ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph. 
 
-Two other trade episodes were also excluded due to methodological reasons. The ATYR episode produced a valid capture ratio; however, realized outcomes were materially affected by execution constraints following a large overnight price gap, requiring a manual exit at the opening price and preventing normal stop-loss execution. As a result, the observed ratio reflects execution limitations rather than exit timing behavior. The FBIO episode, by contrast, represents a structural outlier in which a small unrealized peak preceded a large realized loss, producing an extreme capture ratio driven by denominator instability. FBIO is therefore excluded for interpretability, while both episodes are analyzed separately in the Discussion.
+Two other trade episodes were also excluded due to methodological reasons. The ATYR episode produced a valid capture ratio; however, realized outcomes were materially affected by execution constraints following a large overnight price gap, requiring a manual exit at the opening price and preventing normal stop-loss execution. As a result, the observed ratio reflects execution limitations rather than exit timing behavior. The FBIO episode, by contrast, represents a structural outlier in which a small unrealized peak preceded a large realized loss, producing an extreme negative capture ratio driven by denominator instability. FBIO is therefore excluded for interpretability.
 
 The definition of a trade episode is provided in Appendix [Definitions]. The complete trade-episode table is available in Appendix [Episode Table].
 
@@ -173,19 +173,21 @@ The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) a
 ![](images/holding_distubution.png)
 **Figure 6.** Distribution of holding periods across individual closed lots.
 
-Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 trading days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days.
+Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days calandar days.
 
 ![](images/total_logged_days_by_ticker.png)
 **Figure 7.** Total individual ticker holding duration during trading days.
 
 Figure 7 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
 
+**Note: Figure 6 reports FIFO lot holding durations in calendar days to capture individual lot persistence, while Figure 7 measures cumulative holding time in trading days to reflect overall market exposure.**
+
 Instead, individual ticker outcomes were more impactful for overall performance than holding duration.
 
 ![](images/repeated_exposure.png)
 **Figure 8.** Number of repeated buy-side trade entries per ticker.
 
-Seven of the 22 tickers were purchased on multiple occasions. Notably, the three tickers with the lowest realized PnL (see Figure 4) were all subject to repeated buy-side entries. In contrast, the three highest-PnL tickers were each purchased only once during the experimental period.
+Seven of the 22 tickers were purchased on multiple occasions. Notably, the three tickers with the lowest realized PnL (see Figure 4) were all subject to repeated buy-side entries. In contrast, of the top three highest PnL tickers in Figure 3, only ALDX was repurchased more than once.
 
 This pattern suggests persistence in position-level theses, with the model exhibiting limited responsiveness to realized performance when determining whether to re-enter previously traded securities.
 
@@ -226,8 +228,6 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 ## Discussion
 
-### TODO:
-
 ### Portfolio Concentration
 
 Throughout the experiment, the model's portfolio consisted of three tickers for trading days on average. The average cost basis for a ticker position was $25.28 (25% of starting capital). This indictates the model preferred high concentration positions with limited portfolio diversity. This allocation pattern reflects a preference for highly concentrated positions and limited diversification, resulting in substantial exposure to individual ticker-level movements.  
@@ -238,9 +238,11 @@ The model’s performance was characterized by pronounced loss asymmetry. As sho
 
 ### Position Persistence and Re-Entry
 
-According to Figure 8, the model bought approximately 32% of tickers entered during the experimental period more than once (7 of 22). As shown in Figure 3, five of these repeatedly traded tickers generated negative cumulative realized PnL across all engagements. This pattern indicates persistence in position-level exposure, with re-entry occurring despite unfavorable prior outcomes rather than avoidance following realized losses.
+According to Figure 8, the model bought approximately 32% of tickers entered during the experimental period more than once (7 of 22). As shown in Figure 3, five of these repeatedly traded tickers generated negative cumulative realized PnL across all engagements. In contrast, the two of the highest-PnL tickers in Figure 3 were each purchased only once, with the exception of ALDX, during the experimental period. This pattern indicates persistence in position-level exposure, with re-entry occurring despite unfavorable prior outcomes rather than avoidance following realized losses.
 
 ### Holding Duration and Outcomes
+
+Figure 6 shows the majority of exits occurred within approximately 10–20 calendar days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 total days. Holding duration, however, did not correlate with substantially higher or lower realized PnL. As shown in Figure 7, the two tickers with the highest cumulative holding time, MIST and ABEO, did not rank among the top or bottom three tickers by total realized PnL in Figure 4.
 
 ### Observational Analysis
 
