@@ -230,7 +230,7 @@ Trade selection was characterized by exposure to event-driven catalysts (e.g., r
 
 ### Portfolio Concentration
 
-Throughtout the experiment, the model's portfolio consisted of three tickers for trading days on average. The average cost basis for a ticker position was $25.28 (25% of starting capital). This indictates the model preferred high concentration positions with limited portfolio diversity. This allocation pattern reflects a preference for highly concentrated positions and limited diversification, resulting in substantial exposure to individual ticker-level movements.  
+Throughout the experiment, the model's portfolio consisted of three tickers for trading days on average. The average cost basis for a ticker position was $25.28 (25% of starting capital). This indictates the model preferred high concentration positions with limited portfolio diversity. This allocation pattern reflects a preference for highly concentrated positions and limited diversification, resulting in substantial exposure to individual ticker-level movements.  
 
 ### Risk and Loss Asymmetry
 
