@@ -81,7 +81,7 @@ The experiment covers the period from June 27, 2025 to December 26, 2025, with a
 
 ### Figure Data Sources
 
-- (Figure 2) Equity curve metrics (MDD, largest run) → Appendix A.1
+- (Figure 1–2) Equity series + equity-curve metrics (MDD, largest run) → Appendix A.1
 
 - (Figure 6) FIFO lot metrics + realized exits → Appendix A.2 and Appendix D.1–D.2
 
