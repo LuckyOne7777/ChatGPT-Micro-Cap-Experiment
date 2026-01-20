@@ -79,6 +79,16 @@ All benchmark and portfolio data are recorded at daily frequency, with values re
 
 The experiment covers the period from June 27, 2025 to December 26, 2025, with all portfolio and benchmark data recorded within this timeframe.
 
+### Figure Data Sources
+
+- (Figure 2) Equity curve metrics (MDD, largest run) → Appendix A.1
+
+- (Figure 6) FIFO lot metrics + realized exits → Appendix A.2 and Appendix D.1–D.2
+
+- (Figures 3–4) Position-level (“Pure PnL”) results → Appendix A.3 and Appendix D.3–D.4
+
+- (Figure 5) Episode metrics + PCR → Appendix A.13–A.15 and Appendix D.7
+
 ---
 
 ## Methodology
