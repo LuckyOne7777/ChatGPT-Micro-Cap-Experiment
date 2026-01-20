@@ -673,6 +673,19 @@ This rule is applied to remove undefined or non-informative ratios under the sta
 
 ## Appendix B. Representative LLM Outputs
 
+Context: Deep Research weekly report. The following excerpts are included to illustrate post hoc narrative framing around constraints and hedging within the experiment’s rule set.
+
+> “We also consciously decided not to hedge these catalyst plays with, say, index shorts or diversified longs, because that would dilute the upside.”
+
+Source: Week 24 PDF, p. 15.
+
+> “No Prohibited Securities: We hold only common stock equity in the above companies. We have no options, no futures, no leveraged ETFs, and we are not short any stock.”
+
+Source: Week 24 PDF, p. 16.
+
+Commentary: Both statements are presented as after-the-fact rationale or compliance confirmation. In the experiment, derivatives and shorting were prohibited by design and were not available actions; therefore references to “not hedging” via index shorts (or similar instruments) reflect narrative generation rather than an actionable choice within the permitted trade space.
+
+
 ## Appendix C. Prompt Templates and Versions
 
 Appendix C documents the prompt templates that governed model behavior during the experimental period. 
