@@ -379,7 +379,7 @@ Metrics in Appendix A are computed using reconstruction strategies designed to p
 - FIFO lot-level realized exits are reconstructed from `Trade Log.csv` by matching sell transactions to prior buy transactions under a first-in, first-out convention
 - Position-level (Pure PnL) statistics are reconstructed by aggregating reconstructed FIFO lot exits to one row per ticker
 - Episode-level statistics (including Peak Capture Ratio) are reconstructed from `Daily Updates.csv` by identifying continuous holding intervals from the `Shares` field and summarizing the recorded daily `PnL` series
-- Equity-curve statistics (including Maximum Drawdown and Largest Run) are reconstructed from `Daily Updates.csv` using rows where `Ticker == "TOTAL"` and the `Total Equity` field
+- Equity-curve statistics (including Maximum Drawdown and Largest Run) are reconstructed from `Daily Updates.csv` using rows where `Ticker == "TOTAL"` and the `Total Equity` field, with a baseline row inserted
 
 These reconstructions approximate realized and unrealized dynamics for analytical purposes. They are not intended to be treated as definitive accounting of tax lots, brokerage fills, corporate actions, intraday execution effects, or all sources of slippage.
 
@@ -393,60 +393,66 @@ Where reconstruction choices matter, this appendix defines the conventions expli
 
 #### A.1.1 Portfolio Equity Series Used
 
-Maximum drawdown and largest run calculations are computed from the reconstructed portfolio equity time series `Total Equity` derived from `Daily Updates.csv` where `Ticker == "TOTAL"`, with an additional baseline row inserted:
+Maximum drawdown and largest run calculations are computed from the portfolio equity time series constructed as follows:
 
-- Baseline Date: 2025-06-27
-- Baseline Total Equity: 100.0
+- Filter `Daily Updates.csv` to rows where `Ticker == "TOTAL"`
+- Parse `Date` as a datetime
+- Coerce `Total Equity` to numeric
+- Prepend a baseline row:
+  - Date = 2025-06-27
+  - Total Equity = 100.0
+- Concatenate, sort by Date, and drop duplicate Dates keeping the last record for each Date
 
-If multiple records exist for the same Date, the last record for that Date is retained. The series is then sorted by Date in ascending order.
+This produces a single Date-sorted equity series used for all equity-curve metrics.
 
 #### A.1.2 Running Maximum
 
-The running maximum at time t is defined as the maximum observed portfolio equity from the start of the series through time t:
+The running maximum at time t is defined as the maximum observed portfolio equity from the start of the series through time t.
 
-- Running_Max_t = max(Total_Equity_0, Total_Equity_1, ..., Total_Equity_t)
+In code, this is computed as:
 
-In code this is computed as the cumulative maximum of `Total Equity`.
+- Running Max = cumulative maximum of `Total Equity`
 
 #### A.1.3 Drawdown Percentage
 
-Drawdown percentage at time t is defined as the percent deviation of current equity from the running maximum:
+Drawdown percentage at time t is computed as:
 
-- Drawdown_%_t = (Total_Equity_t / Running_Max_t − 1) × 100
+- Drawdown % = (`Total Equity` / `Running Max` − 1.0) × 100.0
 
-Drawdown values are non-positive when equity is below its prior peak.
+This produces values of 0.0 at new equity highs and negative values when equity is below the prior peak.
 
 #### A.1.4 Maximum Drawdown
 
-Maximum drawdown is defined as the most negative drawdown percentage observed over the full equity series:
+Maximum drawdown is the most negative drawdown percentage observed across the full series.
 
-- Max_Drawdown_% = min_t Drawdown_%_t
+In code, the maximum drawdown point is selected by:
+- finding the row with the minimum value of `Drawdown %`
 
-The maximum drawdown date is the Date associated with the minimum Drawdown_% value.
-
-The maximum drawdown equity value is the `Total Equity` observed on that same Date.
+Reported maximum drawdown fields:
+- max_drawdown_date: Date of the minimum `Drawdown %` row
+- max_drawdown_equity: `Total Equity` on that Date
+- max_drawdown_pct: `Drawdown %` on that Date
 
 #### A.1.5 Largest Run (Run-Up from Local Minimum to Subsequent Peak)
 
-Largest Run is defined as the largest percentage increase from a local minimum (valley) to the subsequent peak prior to the next decline, based on a single-pass segmentation of the equity series.
+Largest Run is defined as the largest percentage increase from a local minimum to a subsequent peak, using the segmentation logic in `find_largest_gain(...)`.
 
 Algorithm summary:
+- Initialize the first observation as the current local minimum and current peak
+- If a new higher equity value occurs, update the current peak
+- If a decline occurs (current equity < current peak), compute the completed run gain:
+  - gain = (peak_val − min_val) / min_val × 100.0
+  - update the best run if this gain exceeds the prior best
+  - reset local minimum and peak to the current observation
+- After reaching the end of the series, also evaluate the final run segment
 
-- Initialize the first observation as both the current local minimum and current peak
-- While equity continues to increase, the current peak is extended
-- When a decline is observed (current equity < current peak), the current run is closed and its gain is evaluated
-- The local minimum and peak are then reset to the current observation and the process continues
-- After iterating through the final observation, the last run (if ending on an increase) is also evaluated
-
-For a given run segment with local minimum value Min_Val and subsequent peak value Peak_Val, the run gain is:
-
-- Run_Gain_% = (Peak_Val − Min_Val) / Min_Val × 100
-
-Largest Run is the maximum Run_Gain_% across all such segments.
+Reported largest run fields:
+- largest_run_start: Date of the local minimum for the best run
+- largest_run_end: Date of the subsequent peak for the best run
+- largest_run_gain_pct: percent gain for the best run
 
 Interpretation note:
-
-- This definition is segment-based and is determined by the reset-on-first-decline rule described above, rather than by searching over all possible minimum-to-maximum intervals.
+- This is a segment-based definition determined by the reset-on-decline rule above, rather than a global search over all possible minimum-to-maximum intervals.
 
 ### A.2 FIFO Lot-Level Accounting
 
@@ -663,6 +669,7 @@ Peak Capture Ratio = exit_pnl / peak_pnl
 If `peak_pnl <= 0`, Peak Capture Ratio is set to null.
 
 This rule is applied to remove undefined or non-informative ratios under the stated episode convention.
+
 
 ## Appendix B. Representative LLM Outputs
 
