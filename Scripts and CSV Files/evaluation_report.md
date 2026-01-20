@@ -51,7 +51,7 @@ Parameters were not optimized to improve behavior or performance during the expe
 
 ### Human Input and Execution
 
-Portfolio and trade log data were updated manually after each NYSE trading day using a standardized processing script, which generated a structured daily input summary (see Appendix [DAILY INPUT]). This summary was provided to the language model as the sole input for decision-making. If trade actions were requested, they were executed on the subsequent trading day. All market data were restricted to only regular trading hours; no pre-market or after-hours data were collected or used.
+Portfolio and trade log data were updated manually after each NYSE trading day using a standardized processing script, which generated a structured daily input summary (see Appendix C.3). This summary was provided to the language model as the sole input for decision-making. If trade actions were requested, they were executed on the subsequent trading day. All market data were restricted to only regular trading hours; no pre-market or after-hours data were collected or used.
 
 Human involvement was strictly limited to data entry and trade execution. No discretionary overrides or optimizations were applied to model-generated decisions.
 
@@ -59,7 +59,7 @@ On a limited number of occasions, daily updates could not be performed following
 
 ### Weekly Research Cycle and Execution Exceptions
 
-A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix [DEEP RESEARCH PROMPT]) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifying questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constraints were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
+A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix C.2) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifying questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constraints were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
 
 This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment. Execution remained forward-only.
 
@@ -69,7 +69,7 @@ This structure enforced a consistent separation between daily operational update
 
 ### Types of Data Collected
 
-This dataset includes overall daily portfolio data for equity and cash, and also includes individual ticker data for each given data. Detailed portfolio CSV columns are provided in Appendix [TRADE LOG CSV DATA]. Trade logs were kept in the event of both buying and selling of securities. See Appendix [TRADE LOG CSV DATA] for detailed schema. Raw analytical reports generated during execution were archived in PDF format. Associated textual summaries were also recorded; however, neither the raw reports nor the summaries were incorporated into the analyses presented in this report.
+This dataset includes overall daily portfolio data for equity and cash, and also includes individual ticker data for each given data. Trade logs were kept in the event of both buying and selling of securities. See Appendix A.0.2 for detailed schema for both CSV files. Raw analytical reports generated during execution were archived in PDF format. Associated textual summaries were also recorded; however, neither the raw reports nor the summaries were incorporated into the analyses presented in this report.
 
 ### Granularity
 
@@ -141,7 +141,7 @@ Figure 2 highlights the largest positive equity movement and the maximum drawdow
 
 Using FIFO lot-level reconstruction, 46 realized lot exits were observed. Exactly 50% of lot exits were profitable; however, average losses exceeded average gains (−3.83 vs +3.01), producing a profit factor of 0.82 and a negative per-lot expectancy of −0.41. Median outcomes showed the opposite pattern, indicating that overall underperformance was driven by a small number of large losses rather than uniformly poor trade selection.
 
-Full Individual Trade Table found in Appendix[Individual Trade Table]
+Full Individual Trade Table found in Appendix D.2.
 
 ---
 
@@ -166,7 +166,7 @@ Four episodes had null Peak Capture Ratios due to the peak recorded PnL value be
 
 Two other trade episodes were also excluded due to methodological reasons. The ATYR episode produced a valid capture ratio; however, realized outcomes were materially affected by execution constraints following a large overnight price gap, requiring a manual exit at the opening price and preventing normal stop-loss execution. As a result, the observed ratio reflects execution limitations rather than exit timing behavior. The FBIO episode, by contrast, represents a structural outlier in which a small unrealized peak preceded a large realized loss, producing an extreme negative capture ratio driven by denominator instability. FBIO is therefore excluded for interpretability.
 
-The definition of a trade episode is provided in Appendix [Definitions]. The complete trade-episode table is available in Appendix [Episode Table].
+The definition of a trade episode is provided in Appendix A.13. The complete trade-episode table is available in Appendix D.7.
 
 Figure 5 indicates that, for the remaining episodes, exits often captured a meaningful fraction of peak unrealized PnL. Peak Capture Ratios varied substantially across episodes, with no clear relationship between peak PnL magnitude and exit timing behavior.
 
@@ -265,7 +265,7 @@ These observations are purely qualitative and are not analyzed quantitatively in
 
 During execution, stop-loss levels were often adjusted upward prior to anticipated catalyst events. However, large adverse price moves occurred outside regular trading hours, rendering these stop-loss levels ineffective. The model appeared to persist in this behavior even after the substantial equity loss associated with the ATYR outcome.
 
-The model would occasionally hallucinate portfolio details or explicitly state rationale that was not grounded in the experimental setup during Deep Research reports. For example, in one weekly report the model referenced the absence of using hedging instruments, despite the use of derivatives and short positions being clearly prohibited throughout the experiment. This specific inconsistency reflects narrative generation rather than a change in execution logic. A representative excerpt is provided in Appendix ["Week 24 PDF: Page 16"].
+The model would occasionally hallucinate portfolio details or explicitly state rationale that was not grounded in the experimental setup during Deep Research reports. For example, in one weekly report the model referenced the absence of using hedging instruments, despite the use of derivatives and short positions being clearly prohibited throughout the experiment. This specific inconsistency reflects narrative generation rather than a change in execution logic. A representative excerpt is provided in Appendix B.
 
 ---
 
