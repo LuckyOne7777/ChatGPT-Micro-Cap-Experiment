@@ -4,7 +4,7 @@
 
 ## Abstract
 
-Large language models (LLMs) are increasingly being applied to financial tasks; however, systematic research on LLMs acting as autonomous decision-making agents remains limited. This evaluation presents a forward-only, non-interventionist paper-trading study of ChatGPT acting as a portfolio decision-maker within the U.S. micro-cap equity market.
+Large language models (LLMs) are increasingly being applied to financial tasks; however, systematic research on LLMs acting as autonomous decision-making agents remains limited. This evaluation presents a forward-only, non-interventionist paper-trading study of ChatGPT acting as a portfolio decision-maker within the U.S. listed micro-cap equity market.
 
 Over the six-month experimental period, the model was prompted using daily trading updates and weekly portfolio evaluations. ChatGPT had complete control over portfolio decisions, while human input was strictly limited to prompting and trade execution. All decisions were generated ex ante and executed on a forward-only basis, with no discretionary overrides or performance optimization.
 
@@ -22,9 +22,9 @@ While machine learning has been utilized in finance for decades, systematic rese
 
 Finance serves as a valuable frontier for LLM research due to the complexity and constant evolution of equity markets. In these environments, LLMs can quantitatively evaluate many factors that affect decision-making and behavior under uncertainty.
 
-In highly efficient markets, particularly U.S. large-cap equities, opportunities for sustained informational advantage are limited. Once information becomes public, stock prices adjust rapidly, reducing the likelihood that superior information alone can generate consistent excess returns. Nevertheless, evaluating LLM behavior in such environments remains useful for understanding how these models allocate capital, manage risk, and respond to uncertainty when informational edge is minimal.
+In highly efficient markets, particularly U.S. listed large-cap equities, opportunities for sustained informational advantage are limited. Once information becomes public, stock prices adjust rapidly, reducing the likelihood that superior information alone can generate consistent excess returns. Nevertheless, evaluating LLM behavior in such environments remains useful for understanding how these models allocate capital, manage risk, and respond to uncertainty when informational edge is minimal.
 
-This study focuses on micro-cap equities. Micro-cap stocks are characterized by higher volatility, lower liquidity, and limited analyst coverage, resulting in greater informational asymmetry. Trading in this environment provides a setting in which information processing, narrative interpretation, and risk management decisions have amplified consequences.
+This evaluation focuses on U.S. listed micro-cap equities. Micro-cap stocks are characterized by higher volatility, lower liquidity, and limited analyst coverage, resulting in greater informational asymmetry. Trading in this environment provides a setting in which information processing, narrative interpretation, and risk management decisions have amplified consequences.
 
 By constraining ChatGPT to operate exclusively within this environment, this evaluation seeks to observe how an LLM behaves when informational efficiency is weaker and downside risk is elevated. Rather than prioritizing performance or optimization, this evaluation seeks to identify decision-making behavior, portfolio construction tendencies, and observed failure modes under conditions of limited capital and heightened risk.
 
@@ -34,7 +34,7 @@ By constraining ChatGPT to operate exclusively within this environment, this eva
 
 ### Scope of Evaluation
 
-ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025.
+ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector in U.S. listed exhanges with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025.
 
 ### Nature of Contribution
 
@@ -114,7 +114,7 @@ No discretionary judgment was applied to model outputs. Human involvement was li
 
 ### Micro-Cap Focus
 
-The model was restricted to purchasing equities within the microcapitalization universe (market capitalization ≤ $300 million). This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
+The model was restricted to purchasing equities within the microcapitalization universe (market capitalization ≤ $300 million) on U.S listed stock exchanges. This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
 
 Given these conditions, the model’s reasoning was expected to rely primarily on publicly available disclosures, such as company press releases, and on information typically discussed in retail-focused analyses. This design choice allowed observation of the model’s decision-making processes in environments with sparse formal coverage and higher informational asymmetry.
 
@@ -232,7 +232,7 @@ Human input was needed in the execution loop for inputting trades and prompting 
 
 ### Micro-Cap Stocks Only
 
-The model was only allowed to buy tickers with market capitalizations equal to or less than 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
+The model was only allowed to buy U.S. listed tickers with market capitalizations equal to or less than 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
 
 ### Close Data Only
 
