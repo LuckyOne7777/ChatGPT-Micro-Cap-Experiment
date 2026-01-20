@@ -17,7 +17,8 @@ providing insight into structural decision-making tendencies relevant to future 
 
 ## Introduction
 
-Generative artificial intelligence has taken the world by storm in the last few years. Large Language Models (LLMs) are now becoming a regular tool in society. While machine learning has been utilized in finance for decades, systematic research into the behavior of LLMs as autonomous decision-makers in financial contexts remains in its early stages.
+
+While machine learning has been utilized in finance for decades, systematic research into the behavior of LLMs as autonomous decision-makers in financial contexts remains in its early stages.
 
 Finance serves as a valuable frontier for LLM research due to the complexity and constant evolution of equity markets. In these environments, LLMs can quantitatively evaluate many factors that affect decision-making and behavior under uncertainty.
 
@@ -83,11 +84,19 @@ The experiment covers the period from June 27, 2025 to December 26, 2025, with a
 
 - (Figure 1–2) Equity series + equity-curve metrics (MDD, largest run) → Appendix A.1
 
-- (Figure 6) FIFO lot metrics + realized exits → Appendix A.2 and Appendix D.1–D.2
+- (Figure 6) Holding-period distribution of FIFO lot exits → Appendix A.2 and Appendix D.2
 
 - (Figures 3–4) Position-level (“Pure PnL”) results → Appendix A.3 and Appendix D.3–D.4
 
 - (Figure 5) Episode metrics + PCR → Appendix A.13–A.15 and Appendix D.7
+
+- (Figure 7) Total logged holding days by ticker (count of unique trading dates with Shares > 0 from Daily Updates.csv)
+  → Appendix A.16 (Total Logged Holding Days by Ticker definition)
+  → Appendix D.9 (Total Logged Holding Days by Ticker table)
+
+- (Figure 8) Repeated buy-side exposure per ticker (count of buy transactions per ticker from Trade Log.csv, plotted as Buy_Entries − 1)
+  → Appendix A.17 (Buy-Side Entries and Re-Entries definition)
+  → Appendix D.10 (Buy Entries and Re-Entries by Ticker table)
 
 ---
 
@@ -680,6 +689,62 @@ If `peak_pnl <= 0`, Peak Capture Ratio is set to null.
 
 This rule is applied to remove undefined or non-informative ratios under the stated episode convention.
 
+### A.16 Total Logged Holding Days by Ticker (Trading-Day Exposure)
+
+#### A.16.1 Definition
+
+Total Logged Holding Days by Ticker measures how many trading days each ticker had exposure in the portfolio.
+
+This metric is computed from `Daily Updates.csv` as:
+
+- Exclude rows where `Ticker == "TOTAL"`
+- Filter to rows where `Shares > 0`
+- Group by `Ticker`
+- Count the number of unique `Date` values per ticker
+
+This counts trading days with exposure (not calendar days).
+
+#### A.16.2 Output
+
+The resulting series is used to generate Figure 7.
+
+### A.17 Buy-Side Entries and Re-Entries (Trade Log)
+
+#### A.17.1 Buy Entry Definition
+
+A buy entry is defined as any row in `Trade Log.csv` where `Shares Bought` is present (non-null).
+
+(Optionally, treat a buy entry as `Shares Bought > 0` if the file can contain zeros.)
+
+#### A.17.2 Buy Entries per Ticker
+
+Buy Entries per Ticker is computed as:
+
+- Filter `Trade Log.csv` to rows where `Shares Bought` is non-null (or > 0)
+- Group by `Ticker`
+- Count rows per ticker
+
+In code, this corresponds to:
+
+- `buy_entries = trades_df.dropna(subset=["Shares Bought"]).groupby("Ticker").size()`
+
+#### A.17.3 Re-Entries per Ticker
+
+Re-Entries per Ticker measures repeated buy-side exposure after an initial entry.
+
+For each ticker:
+
+- Re_Entries = max(Buy_Entries − 1, 0)
+
+This produces:
+
+- 0 if a ticker was bought once
+- 1 if a ticker was bought twice
+- etc.
+
+The resulting series is used to generate Figure 8.
+
+
 
 ## Appendix B. Representative LLM Outputs
 
@@ -1117,4 +1182,81 @@ Ticker start_date   end_date  peak_pnl  exit_pnl  duration_days  peak_capture_ra
 AVERAGE TICKERS HELD PER DAY: 3.13
 
 AVERAGE TICKER COST BASIS (USD): 25.28
+```
+
+### D.9 TOTAL LOGGED HOLDING DAYS BY TICKER (DAILY UPDATES)
+
+Definition: Total Logged Holding Days by Ticker is computed from `Daily Updates.csv` as:
+
+- Exclude rows where `Ticker == "TOTAL"`
+- Filter to rows where `Shares > 0`
+- Group by `Ticker`
+- Count the number of unique `Date` values per ticker
+
+(This counts trading days with exposure, not calendar days.)
+
+Table:
+```text
+Ticker total_trading_days_held
+ABEO    54
+MIST    50
+IINN    33
+SLS     27
+ATYR    21
+ACTU    20
+FBIO    20
+SPRO    19
+AYTU    18
+VTGN    16
+AZTR    16
+AXGN    14
+CADL    14
+ALDX    11
+FDMT    11
+TLSA    10
+ESPR     7
+MBOT     7
+OKYO     5
+SNGX     5
+CSAI     4
+JSPR     3
+```
+
+D.10 Buy Entries and Re-Entries by Ticker (Ticker, Buy_Entries, Re_Entries) from Trade Log.csv.
+
+### D.10 BUY ENTRIES AND RE-ENTRIES BY TICKER (TRADE LOG)
+
+Definition: Buy Entries and Re-Entries are computed from `Trade Log.csv` as:
+
+- Buy_Entries:
+  Count of rows per `Ticker` where `Shares Bought` is non-null (or > 0).
+
+- Re_Entries:
+  Re_Entries = max(Buy_Entries − 1, 0)
+
+Table:
+```text
+Ticker repeated_entries
+FBIO    3
+ALDX    2
+MIST    2
+SPRO    2
+IINN    2
+ATYR    1
+AYTU    1
+AXGN    0
+ABEO    0
+ACTU    0
+ESPR    0
+CSAI    0
+AZTR    0
+CADL    0
+JSPR    0
+FDMT    0
+OKYO    0
+MBOT    0
+SLS     0
+SNGX    0
+TLSA    0
+VTGN    0
 ```
