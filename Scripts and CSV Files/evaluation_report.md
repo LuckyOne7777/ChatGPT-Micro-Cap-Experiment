@@ -4,9 +4,9 @@
 
 ## Abstract
 
-Large language models (LLMs) are increasingly being applied to financial tasks; however, systematic research on LLMs acting as autonomous decision-making agents remains limited. This evaluation presents a forward-only, non-interventionist paper-trading study of ChatGPT acting as a portfolio decision-maker within the U.S. listed micro-cap equity market.
+Large language models (LLMs) are increasingly being applied to financial tasks; however, systematic research on LLMs acting as autonomous decision-making agents remains limited. This evaluation presents a paper-trading study of ChatGPT acting as a portfolio decision-maker within the U.S. listed micro-cap equity market.
 
-Over the six-month experimental period, the model was prompted using daily trading updates and weekly portfolio evaluations. ChatGPT had complete control over portfolio decisions, while human input was strictly limited to prompting and trade execution. All decisions were generated ex ante and executed on a forward-only basis, with no discretionary overrides or performance optimization.
+Over the six-month experimental period, the model was prompted using daily trading updates and weekly portfolio evaluations. ChatGPT had complete control over portfolio decisions, while human input was strictly limited to prompting and trade execution.
 
 The evaluation found that portfolio outcomes were heavily influenced by a small number of concentrated positions. Model behavior was characterized by high portfolio concentration, persistence in ticker-level theses, and asymmetric downside exposure. The model frequently re-entered tickers with prior realized losses and relied on event-driven outcomes, contributing disproportionately to overall portfolio drawdowns.
 
@@ -22,8 +22,6 @@ While machine learning has been utilized in finance for decades, systematic rese
 
 Finance serves as a valuable frontier for LLM research due to the complexity and constant evolution of equity markets. In these environments, LLMs can quantitatively evaluate many factors that affect decision-making and behavior under uncertainty.
 
-In highly efficient markets, particularly U.S. listed large-cap equities, opportunities for sustained informational advantage are limited. Once information becomes public, stock prices adjust rapidly, reducing the likelihood that superior information alone can generate consistent excess returns. Nevertheless, evaluating LLM behavior in such environments remains useful for understanding how these models allocate capital, manage risk, and respond to uncertainty when informational edge is minimal.
-
 This evaluation focuses on U.S. listed micro-cap equities. Micro-cap stocks are characterized by higher volatility, lower liquidity, and limited analyst coverage, resulting in greater informational asymmetry. Trading in this environment provides a setting in which information processing, narrative interpretation, and risk management decisions have amplified consequences.
 
 By constraining ChatGPT to operate exclusively within this environment, this evaluation seeks to observe how an LLM behaves when informational efficiency is weaker and downside risk is elevated. Rather than prioritizing performance or optimization, this evaluation seeks to identify decision-making behavior, portfolio construction tendencies, and observed failure modes under conditions of limited capital and heightened risk.
@@ -34,17 +32,12 @@ By constraining ChatGPT to operate exclusively within this environment, this eva
 
 ### Scope of Evaluation
 
-ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector in U.S. listed exhanges with limited starting capital ($100). The experiment timeframe was from June 27th, 2025 to December 26th, 2025.
+ChatGPT functioned as a decision-maker within the experiment. Trading style, risk management, and position sizing were determined entirely by the model and human input was constrained to manually inputting trades and prompting. The study was strictly confined to stocks in the micro-cap sector in U.S. listed exhanges with limited starting capital ($100). The experiment timeframe was approximately 6 calendar months.
 
 ### Nature of Contribution
 
 Forward-only evaluation of ChatGPT's performance and behavior as a portfolio decision-maker within the experimental setup.
-The study contributes detailed documentation of decision behavior, execution results, and observed failure modes in the limited information and high volatility of micro-cap equities.
-
-### Non-Claims
-
-The evaluation is not a general test of LLM trading ability.
-Parameters were not optimized to improve behavior or performance during the experimental period. The setup is not intended as a deployable trading algorithm to generate returns.
+The study contributes detailed documentation of decision behavior, execution results, and observed failure modes in the limited information and high volatility of micro-cap equities. The study documents decision behavior within a fixed experimental setup and is not intended as a general assessment of LLM trading ability or as a deployable trading system.
 
 ---
 
@@ -56,13 +49,11 @@ Portfolio and trade log data were updated manually after each NYSE trading day u
 
 Human involvement was strictly limited to data entry and trade execution. No discretionary overrides or optimizations were applied to model-generated decisions.
 
-On a limited number of occasions, daily updates could not be performed following market close. In these cases, the missed update was processed using only past data on that market day. To prevent lookahead bias, the model was explicitly constrained to rely solely on the provided input and was prohibited from accessing external or future information.
+On a limited number of occasions, daily updates could not be performed following market close. In these cases, the missed update was processed using only past data on that market day. The model was explicitly constrained to rely solely on the provided input and was prohibited from accessing external or future information.
 
 ### Weekly Research Cycle and Execution Exceptions
 
 A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix C.2) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifying questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constraints were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
-
-This structure enforced a consistent separation between daily operational updates and higher-level strategic reassessment. Execution remained forward-only.
 
 ---
 
@@ -110,8 +101,6 @@ This study employs a forward-looking, rule-based observational design with quasi
 
 The large language model ChatGPT was used as a decision-making engine for the portfolio. The model was tasked with generating daily and weekly trade decisions based exclusively on structured summaries of portfolio state and market data.
 
-No discretionary judgment was applied to model outputs. Human involvement was limited to prompting the model and executing requested trades exactly as the model instructed. The decision process was fully specified in advance and remained constant throughout the study period.
-
 ### Micro-Cap Focus
 
 The model was restricted to purchasing equities within the microcapitalization universe (market capitalization ≤ $300 million) on U.S listed stock exchanges. This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
@@ -120,7 +109,7 @@ Given these conditions, the model’s reasoning was expected to rely primarily o
 
 ### Data Sources and Information Constraints
 
-Market data used for portfolio calculations, metrics, and summaries were sourced from Yahoo Finance and restricted to end-of-day observations during regular trading hours. These data were processed into standardized daily input summaries reflecting historical price information, portfolio holdings, and cash balances.
+Market data used for portfolio calculations, metrics, and summaries were sourced from the Python library "yfinance" and restricted to end-of-day observations during regular trading hours. These data were processed into standardized daily input summaries reflecting historical price information, portfolio holdings, and cash balances.
 
 Although the research process permitted consultation of publicly available web sources for contextual analysis, the language model did not have direct access to external websites, raw market data feeds, or real-time information at decision time. Instead, the model operated exclusively on the structured summaries provided as input.
 
@@ -178,6 +167,8 @@ losses were less concentrated.
 
 As shown in Figure 4, realized losses were larger in magnitude than realized gains. The most significant downside outcome was attributable to ATYR, indicating that overall portfolio performance was strongly influenced by a small number of adverse position-level outcomes.
 
+On average, the portfolio held 3.1 tickers per trading day, indicating a high degree of concentration throughout the experimental period (Appendix D.8).
+
 ![](images/episode_pcr_scatter.png)
 **Figure 5.** Peak Capture Ratio (exit PnL divided by peak unrealized PnL) plotted against peak unrealized profit for valid trade episodes.
 
@@ -188,10 +179,6 @@ Two other trade episodes were also excluded due to methodological reasons. The A
 The definition of a trade episode is provided in Appendix A.13. The complete trade-episode table is available in Appendix D.7.
 
 Figure 5 indicates that, for the remaining episodes, exits often captured a meaningful fraction of peak unrealized PnL. Peak Capture Ratios varied substantially across episodes, with no clear relationship between peak PnL magnitude and exit timing behavior.
-
-Taken together, these distributions indicate a highly concentrated return profile in which aggregate portfolio performance was driven by a limited number of large-magnitude position outcomes rather than by broadly distributed incremental gains. Downside risk was similarly concentrated, with a small subset of positions accounting for a disproportionate share of total losses. As a result, overall performance was highly sensitive to individual ticker-level outcomes. On average, the portfolio consisted of 3.1 tickers on a given trading day.
-
-Summary statistics reported in this section are derived from the position-level (“Pure PnL”) tables provided in Appendix D.3-D.4.
 
 Although trade execution occurred at the FIFO lot level, aggregation of realized outcomes at the position level reveals that only 10 of 22 tickers generated positive total PnL. Average losses exceeded average gains in magnitude, and the largest single position loss dominated overall results, consistent with exposure to binary, event-driven return dynamics.
 
@@ -290,21 +277,9 @@ The model would occasionally hallucinate portfolio details or explicitly state r
 
 ## Limitations
 
-### Short Timeframe
-
 Due to the limited experimental period, the data may not be representative of the model's behavior across different market regimes.
-
-### Market Capitalization
-
 The evaluation should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitalizations.
-
-### Single-Run Evaluation
-
-The evaluation is based on a single experimental run and does not capture variability across repeated runs or alternative random initial conditions.
-
-### Generalizations
-
-The evaluation or its conclusions should not be generalized to LLM trading as a whole. These conclusions should be interpreted with the stated constraints and limitations in mind.
+The results analyzed are based on a single experimental run and does not capture variability across repeated runs or alternative random initial conditions.
 
 ### Prompt and Model Variability
 
@@ -318,7 +293,7 @@ The evaluation focuses on observable decision behaviors under consistent informa
 
 Across the experimental period, portfolio equity outcomes were dominated by a small number of high-impact trades. High position concentration amplified exposure to individual ticker outcomes, with a single adverse position exerting a disproportionate influence on overall portfolio balance. Trading behavior exhibited persistence in position-level theses, as the model re-entered tickers despite prior exits, including cases with realized losses. Tickers subject to repeated buy-side entries accounted for the largest cumulative equity losses. In addition, the model held several positions for extended durations despite ultimately contributing minimally to overall portfolio performance, indicating that holding period length alone was not a reliable determinant of realized outcomes. Exit outcomes frequently occurred after a substantial portion of unrealized gains had accrued, though full capture of peak PnL was uncommon.
 
-Taken together, these results suggest that, when placed in a capital allocation role, an LLM exhibits decision-making patterns resembling high-conviction, thesis-driven discretionary trading. Portfolio outcomes were shaped less by incremental trade-level performance and more by concentration, persistence in position-level narratives, and asymmetric downside exposure. These characteristics emerged despite strict forward-only execution and no discretionary overrides, indicating that observed behaviors reflect structural properties of the decision-making process rather than artifacts of backtesting or optimization.
+Taken together, these results suggest that, when placed in a capital allocation role, an LLM exhibits decision-making patterns resembling high-conviction, thesis-driven discretionary trading. Portfolio outcomes were shaped less by incremental trade-level performance and more by concentration, persistence in position-level narratives, and asymmetric downside exposure.
 
 ---
 
