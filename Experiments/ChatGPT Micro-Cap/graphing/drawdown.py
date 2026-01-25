@@ -26,7 +26,7 @@ def plot_drawdown(equity_df: pd.DataFrame):
     plt.savefig(path, dpi=300, bbox_inches="tight")
     plt.show()
 
-from data_helper import load_data, assemble_path, TRADE_LOG_PATH, DAILY_PATH
+from data_helper import load_data, assemble_path
 
-trades, daily, equity = load_data(TRADE_LOG_PATH, DAILY_PATH)
+trades, daily, equity = load_data()
 plot_drawdown(equity)
