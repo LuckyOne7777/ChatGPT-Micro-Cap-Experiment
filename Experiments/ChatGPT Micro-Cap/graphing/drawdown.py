@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import yfinance as yf # type: ignore
 from pathlib import Path
+overall_dir = Path(__file__).parents[1]
 
 def plot_drawdown(equity_df: pd.DataFrame):
     equity_df = equity_df.copy()
@@ -22,15 +23,17 @@ def plot_drawdown(equity_df: pd.DataFrame):
     plt.axhline(0)
     plt.ylabel("Drawdown (%)")
     plt.title("Drawdown Curve")
-    plt.savefig("Scripts and CSV Files/images/drawdown.png", dpi=300, bbox_inches="tight")
+    path = overall_dir  / Path("images/drawdown.png")
+    plt.savefig(path, dpi=300, bbox_inches="tight")
     plt.show()
 
-def load_data(trade_log_path: str, daily_updates_path: str):
+def load_data(trade_log_path: str | Path, daily_updates_path: str | Path):
     trades = pd.read_csv(trade_log_path, parse_dates=["Date"])
     daily = pd.read_csv(daily_updates_path, parse_dates=["Date"])
     equity = daily[daily["Ticker"] == "TOTAL"].sort_values("Date")
     return trades, daily, equity
 
-
-trades, daily, equity = load_data("Scripts and CSV Files/Trade Log.csv", "Scripts and CSV Files/Daily Updates.csv",)
+TRADE_LOG_PATH = overall_dir / Path("csv_files/Trade Log.csv")
+DAILY_PATH = overall_dir / Path("csv_files/Daily Updates.csv")
+trades, daily, equity = load_data(TRADE_LOG_PATH, DAILY_PATH)
 plot_drawdown(equity)
