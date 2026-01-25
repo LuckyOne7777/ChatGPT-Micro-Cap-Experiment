@@ -1,6 +1,9 @@
-# Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities
-
-*An Exploratory, Forward-Only Paper Trading Study*
+---
+title: "Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities"
+subtitle: "An Exploratory, Forward-Only Paper Trading Study"
+author: "Nathan Smith"
+date: "January 2025"
+---
 
 ## Abstract
 
@@ -17,7 +20,6 @@ providing insight into structural decision-making tendencies relevant to future 
 
 ## Introduction
 
-
 While machine learning has been utilized in finance for decades, systematic research into the behavior of LLMs as autonomous decision-makers in financial contexts remains in its early stages.
 
 Finance serves as a valuable frontier for LLM research due to the complexity and constant evolution of equity markets. In these environments, LLMs can quantitatively evaluate many factors that affect decision-making and behavior under uncertainty.
@@ -25,6 +27,8 @@ Finance serves as a valuable frontier for LLM research due to the complexity and
 This evaluation focuses on U.S. listed micro-cap equities. Micro-cap stocks are characterized by higher volatility, lower liquidity, and limited analyst coverage, resulting in greater informational asymmetry. Trading in this environment provides a setting in which information processing, narrative interpretation, and risk management decisions have amplified consequences.
 
 By constraining ChatGPT to operate exclusively within this environment, this evaluation seeks to observe how an LLM behaves when informational efficiency is weaker and downside risk is elevated. Rather than prioritizing performance or optimization, this evaluation seeks to identify decision-making behavior, portfolio construction tendencies, and observed failure modes under conditions of limited capital and heightened risk.
+
+This study seeks to answer: "When ChatGPT is placed in a forward-only trading environment as a portfolio-managing agent given limited starting capital, what behavior patterns emerge?"
 
 ---
 
@@ -85,7 +89,7 @@ The experiment covers the period from June 27, 2025 to December 26, 2025, with a
   → Appendix A.16 (Total Logged Holding Days by Ticker definition)
   → Appendix D.9 (Total Logged Holding Days by Ticker table)
 
-- (Figure 8) Repeated buy-side exposure per ticker (count of buy transactions per ticker from Trade Log.csv, plotted as Buy_Entries − 1)
+- (Figure 8) Repeated buy-side exposure per ticker (count of buy transactions per ticker from Trade Log.csv, plotted as Buy_Entries - 1)
   → Appendix A.17 (Buy-Side Entries and Re-Entries definition)
   → Appendix D.10 (Buy Entries and Re-Entries by Ticker table)
 
@@ -103,7 +107,7 @@ The large language model ChatGPT was used as a decision-making engine for the po
 
 ### Micro-Cap Focus
 
-The model was restricted to purchasing equities within the microcapitalization universe (market capitalization ≤ $300 million) on U.S listed stock exchanges. This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
+The model was restricted to purchasing equities within the microcapitalization universe (market capitalization <= $300 million) on U.S listed stock exchanges. This constraint was imposed to evaluate model behavior in securities characterized by limited institutional coverage and reduced analyst attention.
 
 Given these conditions, the model’s reasoning was expected to rely primarily on publicly available disclosures, such as company press releases, and on information typically discussed in retail-focused analyses. This design choice allowed observation of the model’s decision-making processes in environments with sparse formal coverage and higher informational asymmetry.
 
@@ -134,20 +138,22 @@ Although prompt templates evolved over the course of the evaluation, all changes
 ## Performance Results
 
 ![](images/equity_vs_baseline.png)
-**Figure 1.** Portfolio equity versus benchmark (normalized to $100) over time.
+**Figure 1.** Portfolio equity versus benchmarks (normalized to $100) over time.
+
+Benchmarks such as the Russell 2000 and the S&P 500 were included to provide contextual reference for broad market conditions during the experimental period rather than to evaluate relative performance. The benchmarks serve to anchor the observed equity trajectory within market regimes; however, all conclusions in this evaluation are derived from portfolio behavior, decision patterns, and realized outcomes, and are not contingent on benchmark performance comparisons.
 
 As shown in Figure 1, portfolio equity declined substantially relative to both the Russell 2000 and the S&P 500 over the experimental period.
 
 ![](images/equity_with_annotations.png)
 **Figure 2.** Portfolio equity with max drawdown percentage (red) and largest run (green).
 
-Figure 2 highlights the largest positive equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached −50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
+Figure 2 highlights the largest positive equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached -50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
 
 ---
 
 ## Trade-Level Analysis
 
-Using FIFO lot-level reconstruction, 46 realized lot exits were observed. Exactly 50% of lot exits were profitable; however, average losses exceeded average gains (−3.83 vs +3.01), producing a profit factor of 0.82 and a negative per-lot expectancy of −0.41. Median outcomes showed the opposite pattern, indicating that overall underperformance was driven by a small number of large losses rather than uniformly poor trade selection.
+Using FIFO lot-level reconstruction, 46 realized lot exits were observed. Exactly 50% of lot exits were profitable; however, average losses exceeded average gains (-3.83 vs +3.01), producing a profit factor of 0.82 and a negative per-lot expectancy of -0.41. Median outcomes showed the opposite pattern, indicating that overall underperformance was driven by a small number of large losses rather than uniformly poor trade selection.
 
 Full Individual Trade Table found in Appendix D.2.
 
@@ -221,9 +227,14 @@ Human input was needed in the execution loop for inputting trades and prompting 
 
 The model was only allowed to buy U.S. listed tickers with market capitalizations equal to or less than 300M. If a held ticker's capitalization became greater than 300M, the model could not buy any more shares.
 
-### Close Data Only
+### Close Data Calculations
 
 All data was calculated based on end-of-day trading data only.
+
+### Simulation Limitations
+
+The trading simulation did not incorporate transaction costs such as commissions or bid–ask spread effects.
+
 
 ### Financial Derivatives Prohibited
 
@@ -279,7 +290,7 @@ The model would occasionally hallucinate portfolio details or explicitly state r
 
 Due to the limited experimental period, the data may not be representative of the model's behavior across different market regimes.
 The evaluation should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitalizations.
-The results analyzed are based on a single experimental run and does not capture variability across repeated runs or alternative random initial conditions.
+The results analyzed are based on a single experimental run and does not capture variability across repeated runs or alternative random initial conditions. This study is descriptive in nature, documenting observed decision-making behavior when an LLM is placed in a constrained capital allocation role.
 
 ### Prompt and Model Variability
 
@@ -411,7 +422,7 @@ In code, this is computed as:
 
 Drawdown percentage at time t is computed as:
 
-- Drawdown % = (`Total Equity` / `Running Max` − 1.0) × 100.0
+- Drawdown % = (`Total Equity` / `Running Max` - 1.0) × 100.0
 
 This produces values of 0.0 at new equity highs and negative values when equity is below the prior peak.
 
@@ -435,7 +446,7 @@ Algorithm summary:
 - Initialize the first observation as the current local minimum and current peak
 - If a new higher equity value occurs, update the current peak
 - If a decline occurs (current equity < current peak), compute the completed run gain:
-  - gain = (peak_val − min_val) / min_val × 100.0
+  - gain = (peak_val - min_val) / min_val × 100.0
   - update the best run if this gain exceeds the prior best
   - reset local minimum and peak to the current observation
 - After reaching the end of the series, also evaluate the final run segment
@@ -480,8 +491,8 @@ For each realized exit record, the following fields are recorded:
 - Shares: number of shares closed from the lot
 - Entry_Price: per-share entry price of the lot
 - Exit_Price: per-share exit price (taken from `Sell Price`)
-- PnL: realized profit or loss in USD, computed as `Shares × (Exit_Price − Entry_Price)`
-- Holding_Days: calendar days between Entry_Date and Exit_Date, computed as `(Exit_Date − Entry_Date).days`
+- PnL: realized profit or loss in USD, computed as `Shares × (Exit_Price - Entry_Price)`
+- Holding_Days: calendar days between Entry_Date and Exit_Date, computed as `(Exit_Date - Entry_Date).days`
 
 All FIFO lot-level performance metrics are computed from this realized exit table.
 
@@ -501,7 +512,7 @@ For each ticker, the following metrics are computed from the FIFO lot exit table
   Sum of realized PnL across all FIFO lot exit records for the ticker
 
 - Holding_Days
-  Calendar-day span from the earliest Entry_Date to the latest Exit_Date for the ticker, computed as `(max(Exit_Date) − min(Entry_Date)).days`
+  Calendar-day span from the earliest Entry_Date to the latest Exit_Date for the ticker, computed as `(max(Exit_Date) - min(Entry_Date)).days`
 
 - Avg_Position_Size
   Computed as `np.average(Shares × Entry_Price, weights=Shares)`, using the FIFO lot exit records for the ticker
@@ -586,7 +597,7 @@ If Sum(`PnL` over losses) equals zero, Profit Factor is reported as infinite.
 
 Expectancy represents the expected `PnL` per observation:
 
-Expectancy = (Average Win × Win Rate) + (Average Loss × (1 − Win Rate))
+Expectancy = (Average Win × Win Rate) + (Average Loss × (1 - Win Rate))
 
 Expectancy is expressed in USD per observation.
 
@@ -646,7 +657,7 @@ For each ticker episode, the following are computed from the subset of rows wher
 - end_date: last Date of the episode
 - peak_pnl: maximum value of the `PnL` field within the episode
 - exit_pnl: last value of the `PnL` field within the episode (PnL on the final episode day)
-- duration_days: calendar-day span from start_date to end_date, computed as `(max(Date) − min(Date)).days`
+- duration_days: calendar-day span from start_date to end_date, computed as `(max(Date) - min(Date)).days`
 
 All episode PnL quantities refer to the recorded daily `PnL` field in `Daily Updates.csv`.
 
@@ -709,7 +720,7 @@ Re-Entries per Ticker measures repeated buy-side exposure after an initial entry
 
 For each ticker:
 
-- Re_Entries = max(Buy_Entries − 1, 0)
+- Re_Entries = max(Buy_Entries - 1, 0)
 
 This produces:
 
@@ -1207,7 +1218,7 @@ Definition: Buy Entries and Re-Entries are computed from `Trade Log.csv` as:
   Count of rows per `Ticker` where `Shares Bought` is non-null (or > 0).
 
 - Re_Entries:
-  Re_Entries = max(Buy_Entries − 1, 0)
+  Re_Entries = max(Buy_Entries - 1, 0)
 
 Table:
 ```text
