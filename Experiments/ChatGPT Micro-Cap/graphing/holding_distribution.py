@@ -46,7 +46,7 @@ def plot_holding_period_distribution(trades_df: pd.DataFrame, bins: int = 10):
     plt.xlabel("Holding Days")
     plt.ylabel("Lot Exit Count")
     plt.savefig(
-        "Scripts and CSV Files/images/holding_distribution.png",
+        assemble_path("holding_distribution.png"),
         dpi=300,
         bbox_inches="tight"
     )
@@ -59,6 +59,6 @@ def load_data(trade_log_path: str, daily_updates_path: str):
     equity = daily[daily["Ticker"] == "TOTAL"].sort_values("Date")
     return trades, daily, equity
 
-
-trades, daily, equity = load_data("Scripts and CSV Files/Trade Log.csv", "Scripts and CSV Files/Daily Updates.csv",)
+from data_helper import load_data, assemble_path
+trades, daily, equity = load_data()
 plot_holding_period_distribution(trades)
