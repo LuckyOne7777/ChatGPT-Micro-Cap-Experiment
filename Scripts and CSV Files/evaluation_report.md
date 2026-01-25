@@ -192,6 +192,18 @@ The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) a
 
 ---
 
+## FIFO-Lot Analysis Excluding ATYR
+
+This section examines how selected aggregate performance metrics change when the ATYR positions, the largest realized loss during the experimental period, is omitted. The purpose is to assess the sensitivity of portfolio-level summaries to single-position tail events rather than to reinterpret the primary results.
+
+Average loss slightly improved from -$3.63 to -$2.22. Expectancy and profit factor, however, had major reversals. Profit factor improved from 0.82 to 1.52, and expectancy went from -0.41 to 0.49.
+
+Notably, these reversals occur without meaningful changes in win rate or median lot outcomes, suggesting that aggregate underperformance is attributable to tail-risk exposure rather than decision failure.
+
+Metrics and tables discussed in this section are reported in Appendix D.12.
+
+---
+
 ## Behavioral Analysis
 
 ![](images/holding_distribution.png)
@@ -431,9 +443,11 @@ This produces values of 0.0 at new equity highs and negative values when equity 
 Maximum drawdown is the most negative drawdown percentage observed across the full series.
 
 In code, the maximum drawdown point is selected by:
+
 - finding the row with the minimum value of `Drawdown %`
 
 Reported maximum drawdown fields:
+
 - max_drawdown_date: Date of the minimum `Drawdown %` row
 - max_drawdown_equity: `Total Equity` on that Date
 - max_drawdown_pct: `Drawdown %` on that Date
@@ -443,6 +457,7 @@ Reported maximum drawdown fields:
 Largest Run is defined as the largest percentage increase from a local minimum to a subsequent peak, using the segmentation logic in `find_largest_gain(...)`.
 
 Algorithm summary:
+
 - Initialize the first observation as the current local minimum and current peak
 - If a new higher equity value occurs, update the current peak
 - If a decline occurs (current equity < current peak), compute the completed run gain:
@@ -452,11 +467,13 @@ Algorithm summary:
 - After reaching the end of the series, also evaluate the final run segment
 
 Reported largest run fields:
+
 - largest_run_start: Date of the local minimum for the best run
 - largest_run_end: Date of the subsequent peak for the best run
 - largest_run_gain_pct: percent gain for the best run
 
 Interpretation note:
+
 - This is a segment-based definition determined by the reset-on-decline rule above, rather than a global search over all possible minimum-to-maximum intervals.
 
 ### A.2 FIFO Lot-Level Accounting
@@ -729,8 +746,6 @@ This produces:
 - etc.
 
 The resulting series is used to generate Figure 8.
-
-
 
 ## Appendix B. Representative LLM Outputs
 
@@ -1221,7 +1236,9 @@ Definition: Buy Entries and Re-Entries are computed from `Trade Log.csv` as:
   Re_Entries = max(Buy_Entries - 1, 0)
 
 Table:
+
 ```text
+
 Ticker repeated_entries
 FBIO    3
 ALDX    2
@@ -1326,16 +1343,6 @@ expectancy                    : 1.0998
 avg_holding_days              : 25.2857
 
 ============================================================
-AVERAGE TICKERS HELD PER DAY
-============================================================
-3.13
-
-============================================================
-AVERAGE TICKER COST BASIS (USD)
-============================================================
-25.28
-
-============================================================
 PURE PnL BY TICKER (ONE ROW PER POSITION)
 ============================================================
 Ticker       PnL  Holding_Days  Avg_Position_Size  Num_Lot_Exits
@@ -1376,4 +1383,35 @@ Ticker Entry_Date  Exit_Date  Shares  Entry_Price  Exit_Price   PnL  Holding_Day
   FBIO 2025-09-15 2025-10-01     5.0         3.85        2.47 -6.90            16
   MIST 2025-10-13 2025-11-06    17.0         2.03        1.70 -5.61            24
   IINN 2025-07-08 2025-08-08    14.0         1.50        1.10 -5.60            31
+
+============================================================
+AVERAGE TICKERS HELD PER DAY
+============================================================
+3.13
+
+============================================================
+AVERAGE TICKER COST BASIS (USD)
+============================================================
+25.28
+```
+
+### D.12: FIFO-LOT COMPARISON OF AGGREGATE METRICS WITH AND WITHOUT ATYR
+
+```text
+===================================================================
+METRIC                          | INCLUDING ATYR | EXCLUDING ATYR |
+===================================================================
+TRADE COUNT                     | 46             | 43             |
+WIN RATE                        | 0.5000         | 0.5116         |
+AVG WIN                         | 3.0087         | 3.0718         |
+MEDIAN WIN                      | 1.6200         | 1.5900         |
+AVG LOSS                        | -3.8265        | -2.2242        |
+MEDIAN LOSS                     | -1.4700        | -1.3600        |
+PROFIT FACTOR                   | 0.8220         | 1.5192         |
+EXPECTANCY                      | -0.4089        | 0.4854         |
+AVG HOLDING DAYS                | 17.8043        | 17.3256        |
+-------------------------------------------------------------------
+POSITION-LEVEL EXPECTANCY       | -0.6811        | 1.0998         |
+POSITION-LEVEL PROFIT FACTOR    | 0.7972         | 1.6452         | 
+====================================================================
 ```
