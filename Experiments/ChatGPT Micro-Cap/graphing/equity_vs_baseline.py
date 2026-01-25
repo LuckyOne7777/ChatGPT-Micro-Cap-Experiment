@@ -2,17 +2,17 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import yfinance as yf # type: ignore
 from pathlib import Path
-
+from data_helper import DAILY_PATH, assemble_path
 DATA_DIR = "Scripts and CSV Files"
 PORTFOLIO_CSV = f"{DATA_DIR}/Daily Updates.csv"
 
 # Save path in project root
-RESULTS_PATH = Path("Results.png")
+RESULTS_PATH = assemble_path("equity_vs_baseline.png")
 
 
 def load_portfolio_totals() -> pd.DataFrame:
     """Load portfolio equity history including a baseline row."""
-    chatgpt_df = pd.read_csv(PORTFOLIO_CSV)
+    chatgpt_df = pd.read_csv(DAILY_PATH)
     chatgpt_totals = chatgpt_df[chatgpt_df["Ticker"] == "TOTAL"].copy()
     chatgpt_totals["Date"] = pd.to_datetime(chatgpt_totals["Date"])
     chatgpt_totals["Total Equity"] = pd.to_numeric(
@@ -189,8 +189,7 @@ def main() -> dict:
     plt.tight_layout()
 
     # --- Auto-save to project root ---
-    plt.savefig("Scripts and CSV Files/images/equity_vs_baseline.png", dpi=300, bbox_inches="tight")
-    print(f"Saved chart to: {RESULTS_PATH.resolve()}")
+    plt.savefig(RESULTS_PATH, dpi=300, bbox_inches="tight")
 
     plt.show()
 
