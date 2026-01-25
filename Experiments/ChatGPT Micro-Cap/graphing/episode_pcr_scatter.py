@@ -1,11 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from data_helper import DAILY_PATH, assemble_path
 # -----------------------------
 # Load and prepare data
 # -----------------------------
 
-df = pd.read_csv("Scripts and CSV Files/Daily Updates.csv")
+df = pd.read_csv(DAILY_PATH)
 df = df[df["Ticker"] != "TOTAL"]
 # remove ATYR for visual accuracy
 df = df[df["Ticker"] != "ATYR"]
@@ -86,7 +86,7 @@ outlier = episode_stats.loc[
 plt.title("Exit Timing Relative to Peak Unrealized Profit")
 
 plt.savefig(
-    "Scripts and CSV Files/images/episode_pcr_scatter.png",
+    assemble_path("episode_pcr_scatter.png"),
     dpi=300,
     bbox_inches="tight"
 )
