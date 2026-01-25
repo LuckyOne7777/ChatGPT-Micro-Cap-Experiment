@@ -1,4 +1,4 @@
-## Deep Research Index
+# Deep Research Index
 
 > **Note:** The “Starting Research” report was written *before trading began* and outlines 
 the initial hypotheses and strategy.  
