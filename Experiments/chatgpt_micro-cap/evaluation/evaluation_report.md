@@ -56,7 +56,7 @@ On a limited number of occasions, daily updates could not be performed following
 
 ### Weekly Research Cycle and Execution Exceptions
 
-A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix C.2) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifying questions. When the model asked for trading guidance, no judgement was given, however questions regarding rules and constraints were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
+A weekly research cycle was conducted on Fridays using a dedicated deep research prompt (see Appendix C.2) and the "Deep Research" feature was used. When using the "Deep Research" mode, the model will ask clarifying questions. When the model asked for trading guidance, no judgement was given; however, questions regarding rules and constraints were always answered accurately. Any trade actions proposed outside this framework on Fridays were deferred pending inclusion in the weekly research output. The resulting report was archived, and all trade actions outlined were executed during the subsequent trading week.
 
 ---
 
@@ -300,7 +300,7 @@ The model would occasionally hallucinate portfolio details or explicitly state r
 
 Due to the limited experimental period, the data may not be representative of the model's behavior across different market regimes.
 The evaluation should only be analyzed in the context of micro-cap equities; LLM behavior may vary widely in different market capitalizations.
-The results analyzed are based on a single experimental run and does not capture variability across repeated runs or alternative random initial conditions. This study is descriptive in nature, documenting observed decision-making behavior when an LLM is placed in a constrained capital allocation role.
+The results analyzed are based on a single experimental run and do not capture variability across repeated runs or alternative random initial conditions. This study is descriptive in nature, documenting observed decision-making behavior when an LLM is placed in a constrained capital allocation role.
 
 ### Prompt and Model Variability
 
