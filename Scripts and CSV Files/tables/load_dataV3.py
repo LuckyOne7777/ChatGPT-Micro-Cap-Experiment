@@ -4,9 +4,11 @@ import numpy as np
 # ==========================================================
 # BUILD FIFO LOT-LEVEL REALIZED EXITS
 # ==========================================================
-def build_fifo_lot_exits(trade_log: pd.DataFrame) -> pd.DataFrame:
+def build_fifo_lot_exits(trade_log: pd.DataFrame, exclude_atyr: bool = False) -> pd.DataFrame:
     df = trade_log.copy()
     df["Date"] = pd.to_datetime(df["Date"])
+    if exclude_atyr:
+        df = df[df["Ticker"] != "ATYR"]
     df = df.sort_values("Date")
 
     realized = []
@@ -116,10 +118,10 @@ def compute_metrics(df: pd.DataFrame, pnl_col: str, holding_col: str):
 # ==========================================================
 # MASTER COMPUTATION
 # ==========================================================
-def compute_trade_metrics(trade_log: pd.DataFrame):
+def compute_trade_metrics(trade_log: pd.DataFrame, exclude_atyr: bool = False):
 
     # FIFO lot-level exits
-    lot_exits = build_fifo_lot_exits(trade_log)
+    lot_exits = build_fifo_lot_exits(trade_log, exclude_atyr=exclude_atyr)
 
     lot_metrics = compute_metrics(
         lot_exits,
@@ -229,3 +231,7 @@ if __name__ == "__main__":
     trade_log = pd.read_csv("Scripts and CSV Files/Trade Log.csv")
     results = compute_trade_metrics(trade_log)
     print_results(results)
+    
+    print("\n"+ "=" * 32 + " ATYR EXCLUDED " + "=" * 32 + "\n")
+    execluded_results = compute_trade_metrics(trade_log, exclude_atyr=True)
+    print_results(execluded_results)
