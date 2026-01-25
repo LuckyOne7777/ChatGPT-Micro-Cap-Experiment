@@ -1,5 +1,4 @@
-# ChatGPT Micro-Cap Experiment
-
+# LLM Trading Lab
 This repository started as a **6-month live micro-cap trading experiment** in which a large language model (ChatGPT) manages a real-money portfolio under strict, predefined rules.
 
 What began as a single experiment has evolved into a **baseline framework** for studying how large language models behave as portfolio decision-makers.  
