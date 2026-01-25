@@ -27,19 +27,14 @@ def plot_total_logged_days_by_ticker(daily_df: pd.DataFrame):
     plt.title("Total Portfolio Holding Days by Ticker")
 
     plt.savefig(
-        "Scripts and CSV Files/images/total_logged_days_by_ticker.png",
+        assemble_path("total_logged_days_by_ticker.png"),
         dpi=300,
         bbox_inches="tight"
     )
     plt.show()
 
-def load_data(trade_log_path: str, daily_updates_path: str):
-    trades = pd.read_csv(trade_log_path, parse_dates=["Date"])
-    daily = pd.read_csv(daily_updates_path, parse_dates=["Date"])
-    equity = daily[daily["Ticker"] == "TOTAL"].sort_values("Date")
-    return trades, daily, equity
+from data_helper import load_data, assemble_path
 
-
-trades, daily, equity = load_data("Scripts and CSV Files/Trade Log.csv", "Scripts and CSV Files/Daily Updates.csv",)
+trades, daily, equity = load_data()
 
 plot_total_logged_days_by_ticker(daily)
