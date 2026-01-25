@@ -1,9 +1,16 @@
+<!--
+For PDF generation
 ---
 title: "Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities"
 subtitle: "An Exploratory, Forward-Only Paper Trading Study"
 author: "Nathan Smith"
 date: "January 2025"
 ---
+-->
+
+# Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities
+
+**An Exploratory, Forward-Only Paper Trading Study by Nathan Smith**
 
 ## Abstract
 
