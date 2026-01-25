@@ -5,7 +5,7 @@ This repository started as a **6-month live micro-cap trading experiment** in wh
 What began as a single experiment has evolved into a **baseline framework** for studying how large language models behave as portfolio decision-makers.  
 All historical data, research artifacts, and logs are preserved for transparency and auditability.
 
-**Full research evaluation out now: [Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities](Experiments/chatgpt_micro_cap/evaluation/paper.pdf)**
+**Full research evaluation out now: [Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities](Experiments/chatgpt_micro-cap/evaluation/paper.pdf)**
 
 ---
 
