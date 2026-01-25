@@ -192,18 +192,6 @@ The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) a
 
 ---
 
-## FIFO-Lot Analysis Excluding ATYR
-
-This section examines how selected aggregate performance metrics change when the ATYR positions, the largest realized loss during the experimental period, is omitted. The purpose is to assess the sensitivity of portfolio-level summaries to single-position tail events rather than to reinterpret the primary results.
-
-Average loss slightly improved from -$3.63 to -$2.22. Expectancy and profit factor, however, had major reversals. Profit factor improved from 0.82 to 1.52, and expectancy went from -0.41 to 0.49.
-
-Notably, these reversals occur without meaningful changes in win rate or median lot outcomes, suggesting that aggregate underperformance is attributable to tail-risk exposure rather than decision failure.
-
-Metrics and tables discussed in this section are reported in Appendix D.12.
-
----
-
 ## Behavioral Analysis
 
 ![](images/holding_distribution.png)
@@ -229,6 +217,18 @@ This pattern suggests persistence in position-level theses, with the model exhib
 
 ---
 
+## FIFO-Lot Analysis Excluding ATYR
+
+This section examines how selected aggregate performance metrics change when the ATYR positions, the largest realized loss during the experimental period, is omitted. The purpose is to assess the sensitivity of portfolio-level summaries to single-position tail events rather than to reinterpret the primary results.
+
+Average loss slightly improved from -$3.63 to -$2.22. Expectancy and profit factor, however, had major reversals. Profit factor improved from 0.82 to 1.52, and expectancy went from -0.41 to 0.49.
+
+Notably, these reversals occur without meaningful changes in win rate or median lot outcomes, suggesting that aggregate underperformance is attributable to tail-risk exposure rather than decision failure.
+
+Metrics and tables discussed in this section are reported in Appendix D.12.
+
+---
+
 ## Operational Constraints
 
 ### Human Input Required
@@ -246,7 +246,6 @@ All data was calculated based on end-of-day trading data only.
 ### Simulation Limitations
 
 The trading simulation did not incorporate transaction costs such as commissions or bid–ask spread effects.
-
 
 ### Financial Derivatives Prohibited
 
