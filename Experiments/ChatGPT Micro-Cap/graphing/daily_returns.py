@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt 
 import pandas as pd
-from pathlib import Path
 
 def plot_daily_returns_distribution(
     equity_df: pd.DataFrame,
@@ -23,17 +22,10 @@ def plot_daily_returns_distribution(
     plt.xlabel("Daily Return (%)")
     plt.ylabel("Frequency")
     plt.title("Daily Returns Distribution")
-    plt.savefig("Scripts and CSV Files/images/daily_returns.png", dpi=300, bbox_inches="tight")
+    plt.savefig(assemble_path("daily_returns.png"), dpi=300, bbox_inches="tight")
     plt.show()
 
-def load_data(trade_log_path: str | Path, daily_updates_path: str | Path):
-    trades = pd.read_csv(trade_log_path, parse_dates=["Date"])
-    daily = pd.read_csv(daily_updates_path, parse_dates=["Date"])
-    equity = daily[daily["Ticker"] == "TOTAL"].sort_values("Date")
-    return trades, daily, equity
-
-TRADE_LOG_PATH = overall_dir / Path("csv_files/Trade Log.csv")
-DAILY_PATH = overall_dir / Path("csv_files/Daily Updates.csv")
-trades, daily, equity = load_data(TRADE_LOG_PATH, DAILY_PATH)
+from data_helper import load_data, assemble_path
+trades, daily, equity = load_data()
 
 plot_daily_returns_distribution(equity)
