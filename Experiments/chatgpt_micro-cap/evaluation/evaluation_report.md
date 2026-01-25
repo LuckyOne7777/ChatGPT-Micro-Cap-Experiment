@@ -40,7 +40,6 @@ ChatGPT functioned as a decision-maker within the experiment. Trading style, ris
 
 ### Nature of Contribution
 
-Forward-only evaluation of ChatGPT's performance and behavior as a portfolio decision-maker within the experimental setup.
 The study contributes detailed documentation of decision behavior, execution results, and observed failure modes in the limited information and high volatility of micro-cap equities. The study documents decision behavior within a fixed experimental setup and is not intended as a general assessment of LLM trading ability or as a deployable trading system.
 
 ---
@@ -137,14 +136,14 @@ Although prompt templates evolved over the course of the evaluation, all changes
 
 ## Performance Results
 
-![](images/equity_vs_baseline.png)
+![](../images/equity_vs_baseline.png)
 **Figure 1.** Portfolio equity versus benchmarks (normalized to $100) over time.
 
 Benchmarks such as the Russell 2000 and the S&P 500 were included to provide contextual reference for broad market conditions during the experimental period rather than to evaluate relative performance. The benchmarks serve to anchor the observed equity trajectory within market regimes; however, all conclusions in this evaluation are derived from portfolio behavior, decision patterns, and realized outcomes, and are not contingent on benchmark performance comparisons.
 
 As shown in Figure 1, portfolio equity declined substantially relative to both the Russell 2000 and the S&P 500 over the experimental period.
 
-![](images/equity_with_annotations.png)
+![](../images/equity_with_annotations.png)
 **Figure 2.** Portfolio equity with max drawdown percentage (red) and largest run (green).
 
 Figure 2 highlights the largest positive equity movement and the maximum drawdown observed during the experimental period. The largest run occurred between November 13, 2025 and November 18, 2025, during which portfolio equity increased by 21.51%. The maximum drawdown reached -50.33%, corresponding to an equity value of $67.10 on November 6, 2025.
@@ -161,21 +160,21 @@ Full Individual Trade Table found in Appendix D.2.
 
 ## Concentration and Risk Analysis
 
-![](images/return_by_trades.png)
+![](../images/return_by_trades.png)
 **Figure 3.** Realized PnL (USD) by ticker.
 
 Figure 3 shows 10 of the 22 tickers the model bought within the experimental period generated profits.
 Profits among tickers generally had concentrated profits; with the exception of ATYR,
 losses were less concentrated.
 
-![](images/top_losses_vs_wins.png)
+![](../images/top_losses_vs_wins.png)
 **Figure 4.** Top realized PnL (USD) ticker wins vs. losses.
 
 As shown in Figure 4, realized losses were larger in magnitude than realized gains. The most significant downside outcome was attributable to ATYR, indicating that overall portfolio performance was strongly influenced by a small number of adverse position-level outcomes.
 
 On average, the portfolio held 3.1 tickers per trading day, indicating a high degree of concentration throughout the experimental period (Appendix D.8).
 
-![](images/episode_pcr_scatter.png)
+![](../images/episode_pcr_scatter.png)
 **Figure 5.** Peak Capture Ratio (exit PnL divided by peak unrealized PnL) plotted against peak unrealized profit for valid trade episodes.
 
 Four episodes had null Peak Capture Ratios due to the peak recorded PnL value being below zero. These tickers were left out of the graph.
@@ -194,12 +193,12 @@ The distribution of FIFO lot-level outcomes (reported in Trade-Level Analysis) a
 
 ## Behavioral Analysis
 
-![](images/holding_distribution.png)
+![](../images/holding_distribution.png)
 **Figure 6.** Distribution of holding periods across individual closed lots.
 
 Figure 6 shows a strongly right-skewed distribution with a long right tail. The majority of FIFO lot exits occurred within approximately 10–20 days, while a small number of lots were held for substantially longer durations, including one holding period exceeding 70 days calendar days.
 
-![](images/total_logged_days_by_ticker.png)
+![](../images/total_logged_days_by_ticker.png)
 **Figure 7.** Total individual ticker holding duration during trading days.
 
 Figure 7 shows that cumulative holding time was concentrated in a small number of tickers, with ABEO and MIST accounting for the largest total time-in-portfolio exposure. Despite their extended holding durations, these positions produced divergent realized outcomes: ABEO ranked fifth in total realized PnL, while MIST ranked eighth from the bottom. This contrast indicates that prolonged holding time alone was not a reliable determinant of portfolio-level performance.
@@ -208,7 +207,7 @@ Figure 7 shows that cumulative holding time was concentrated in a small number o
 
 Instead, individual ticker outcomes were more impactful for overall performance than holding duration.
 
-![](images/repeated_exposure.png)
+![](../images/repeated_exposure.png)
 **Figure 8.** Number of repeated buy-side trade entries per ticker.
 
 Seven of the 22 tickers were purchased on multiple occasions. Notably, the three tickers with the lowest realized PnL (see Figure 4) were all subject to repeated buy-side entries. In contrast, of the top three highest PnL tickers in Figure 3, only ALDX was repurchased more than once.
