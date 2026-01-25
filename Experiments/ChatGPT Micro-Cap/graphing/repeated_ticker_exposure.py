@@ -1,4 +1,5 @@
 import pandas as pd
+from data_helper import assemble_path, load_data
 import matplotlib.pyplot as plt
 
 def plot_repeated_ticker_exposure(trades_df: pd.DataFrame):
@@ -24,18 +25,11 @@ def plot_repeated_ticker_exposure(trades_df: pd.DataFrame):
     plt.ylabel("Number of Re-Entries")
     plt.xlabel("Ticker")
     plt.savefig(
-        "Scripts and CSV Files/images/repeated_exposure.png",
+        assemble_path("repeated_exposure.png"),
         dpi=300,
         bbox_inches="tight"
     )
     plt.show()
 
-
-def load_data(trade_log_path: str, daily_updates_path: str): 
-    trades = pd.read_csv(trade_log_path, parse_dates=["Date"]) 
-    daily = pd.read_csv(daily_updates_path, parse_dates=["Date"]) 
-    equity = daily[daily["Ticker"] == "TOTAL"].sort_values("Date") 
-    return trades, daily, equity 
-
-trades, daily, equity = load_data("Scripts and CSV Files/Trade Log.csv", "Scripts and CSV Files/Daily Updates.csv",) 
+trades, daily, equity = load_data() 
 plot_repeated_ticker_exposure(trades)
