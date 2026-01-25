@@ -1,107 +1,170 @@
 # ChatGPT Micro-Cap Experiment
-Welcome to the repo behind my 6-month live trading experiment where ChatGPT manages a real-money micro-cap portfolio.
 
-## Overview on getting started: [Here](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Start%20Your%20Own/README.md)
-   
-## Repository Structure
+This repository started as a **6-month live micro-cap trading experiment** in which a large language model (ChatGPT) manages a real-money portfolio under strict, predefined rules.
 
-- **`trading_script.py`** - Main trading engine with portfolio management and stop-loss automation
-- **`Scripts and CSV Files/`** - My personal portfolio (updates every trading day)
-- **`Start Your Own/`** - Template files and guide for starting your own experiment  
-- **`Weekly Deep Research (MD|PDF)/`** - Research summaries and performance reports
-- **`Experiment Details/`** - Documentation, methodology, prompts, and Q&A
+What began as a single experiment has evolved into a **baseline framework** for studying how large language models behave as portfolio decision-makers.  
+All historical data, research artifacts, and logs are preserved for transparency and auditability.
 
-# The Concept
-Every day, I kept seeing the same ad about having some A.I. pick undervalued stocks. It was obvious it was trying to get me to subscribe to some garbage, so I just rolled my eyes.  
-Then I started wondering, "How well would that actually work?"
+**Full research evaluation out now: [Evaluating ChatGPT as a Portfolio Decision-Maker in Micro-Cap Equities](experiments/chatgpt_micro_cap/evaluation/paper.pdf)**
 
-So, starting with just $100, I wanted to answer a simple but powerful question:
+---
 
-**Can powerful large language models like ChatGPT actually generate alpha (or at least make smart trading decisions) using real-time data?**
+## Running Your Own Experiment
 
-## Each trading day:
+If you want to run your own AI-managed trading experiment, check out this framework I created for LLM research: [LLM Investor Behavior Benchmark - LIBB](https://github.com/LuckyOne7777/LLM-Investor-Behavior-Benchmark)
 
-- I provide it trading data on the stocks in its portfolio.  
-- Strict stop-loss rules apply.  
-- Every week I allow it to use deep research to reevaluate its account.  
-- I track and publish performance data weekly on my blog: [Here](https://nathanbsmith729.substack.com)
+## Repository Purpose
+
+This repository serves two primary purposes:
+
+1. A **complete, forward-only record** of a live AI-managed trading experiment  
+2. A **reusable foundation** for future AI-driven trading experiments built on the same structure
+
+Historical artifacts remain unchanged. New experiments, analyses, and methodologies are layered on top without rewriting past results.
+
+---
+
+```text
+ChatGPT-Micro-Cap-Experiment/
+│
+├─ README.md
+├─ requirements.txt
+├─ Makefile
+│
+├─ experiments/
+│  └─ chatgpt_micro_cap/
+│     │
+│     ├─ trading_script.py
+│     │
+|     ├─ graphing/
+|     │  ├─ daily_returns.py
+|     │  ├─ drawdown.py
+|     │  └─ ...
+|     │ 
+│     ├─ csv_files/
+│     │  ├─ Daily_Updates.csv
+│     │  └─ Trade_Log.csv
+│     │
+│     ├─ evaluation/
+│     │  ├─ evaluation_report.md
+│     │  └─ paper.pdf
+│     │
+│     ├─ collected_artifacts/
+│     │  ├─ deep_research_index.md
+│     │  ├─ chats.md
+│     │  │
+│     │  ├─ Weekly_Deep_Research_MD/
+│     │  │  ├─ Week_01_Summary.md
+│     │  │  ├─ Week_02_Summary.md
+│     │  │  └─ ...
+│     │  │
+│     │  └─ Weekly_Deep_Research_PDF/
+│     │     ├─ Starting_Research.pdf
+│     │     ├─ Week_01.pdf
+│     │     ├─ Week_02.pdf
+│     │     └─ ...
+│     │
+│     ├─ images/
+│     │  ├─ equity_vs_baseline.png
+│     │  ├─ repeated_exposure.png
+│     │  └─ ...
+│     │
+│     ├─ tables/
+│     │  └─ metrics.txt
+│     │
+│     ├─ metrics/
+│     │  ├─ load_dataV3.py
+│     │  └─ episode_pcr.py
+│     │
+│     └─ processing/
+│        ├─ ProcessPortfolio.py
+|
+│
+├─
+
+```
+---
+
+## The Concept
+
+Every day, I kept seeing the same ad about having some A.I. pick undervalued stocks. It was obvious it was trying to get me to subscribe to some garbage, so I just rolled my eyes. 
+Then I started wondering, "How well would that actually work?" 
+
+So, starting with just $100, I wanted to answer a simple but powerful question: **Can powerful large language models like ChatGPT actually generate alpha (or at least make smart trading decisions) using real-time data?**
+
+Today, this repo has evolved into so much more than simply chasing alpha.
+
+---
+
+## Why This Matters
+
+AI is being aggressively marketed as a replacement for human decision-making across industries.  
+Trading is a domain where mistakes are measurable, irreversible, and costly.
+
+This platform tests those claims using:
+
+- Forward-only decisions
+- Full transparency  
+- Publicly logged results
+
+---
 
 ## Research & Documentation
 
-- [Research Index](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Experiment%20Details/Deep%20Research%20Index.md)  
-- [Starting Your Own](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Start%20Your%20Own/README.md)  
-- [Research Summaries (MD)](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/tree/main/Weekly%20Deep%20Research%20(MD))  
-- [Full Deep Research Reports (PDF)](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/tree/main/Weekly%20Deep%20Research%20(PDF))
-- [Chats](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Experiment%20Details/Chats.md)
-# Current Performance
+Here are the artifacts links for the Micro-Cap Experiment:
 
-<!-- To update performance chart: 
-     1. Replace the image file with updated results
-     2. Update the dates and description below
-     3. Update the "Last Updated" date -->
+- **Research Index**  
+  [Deep Research Index](experiments/chatgpt_micro_cap/deep_research_index.md)
 
-**Current Portfolio Results**
+- **Decision Logs / Chats**  
+  [Chats](experiments/chatgpt_micro_cap/chats.md)
 
-![Latest Performance Results](Results.png)
+---
 
-**Current Status:** Portfolio is underperforming the S&P 500 benchmark
+## Features of This Repository
 
-*Performance data is updated after each trading day. See the CSV files in `Scripts and CSV Files/` for detailed daily tracking.*
+- 40 page PDF evaluation over results
+- Live trading engine used in production  
+- LLM-driven trade selection under hard constraints  
+- Daily CSV-based portfolio accounting  
+- Automated stop-loss enforcement  
+- Benchmark comparisons (S&P 500, Russell 2000)  
+- CAPM, Sharpe, Sortino, and drawdown analytics  
+- Full trade and decision logs
 
-# Features of This Repo
-- Live trading scripts — used to evaluate prices and update holdings daily  
-- LLM-powered decision engine — ChatGPT picks the trades  
-- Performance tracking — CSVs with daily PnL, total equity, and trade history  
-- Visualization tools — Matplotlib graphs comparing ChatGPT vs. Index  
-- Logs & trade data — auto-saved logs for transparency  
+---
 
-## Want to Contribute?
+## Tech Stack
 
-Contributions are very welcome! This project is community-oriented, and your help is invaluable.  
+- Python 3.11+  
+- pandas  
+- yfinance (primary data source)  
+- Stooq (fallback data source)  
+- Matplotlib  
 
-- **Issues:** If you notice a bug or have an idea for improvement, please.  
-- **Pull Requests:** Feel free to submit a PR — I usually review within a few days.  
-- **Collaboration:** High-value contributors may be invited as maintainers/admins to help shape the project’s future.  
+---
 
-Whether it’s fixing a typo, adding features, or discussing new ideas, all contributions are appreciated!
+## Future Work
 
-For more information, check out: [Contributing Guide](https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Other/CONTRIBUTING.md)
+I am currently designing the future experiment over newly listed IPOs with monthly analysis on my [Substack](https://nathanbsmith729.substack.com/).
 
-# Why This Matters
-AI is being hyped across every industry, but can it really manage money without guidance?
+Also, I developing the general experimental framework I created for LLM research [LIBB](https://github.com/LuckyOne7777/LLM-Investor-Behavior-Benchmark) for the upcoming and all future experiments.
 
-This project is an attempt to find out — with transparency, data, and a real budget.
+---
 
-# Tech Stack & Features
+## Contributing
 
-## Core Technologies
-- **Python** - Core scripting and automation
-- **pandas + yFinance** - Market data fetching and analysis
-- **Matplotlib** - Performance visualization and charting
-- **ChatGPT-5** - AI-powered trading decision engine
+Contributions are welcome.
 
-## Key Features
-- **Robust Data Sources** - Yahoo Finance primary, Stooq fallback for reliability
-- **Automated Stop-Loss** - Automatic position management with configurable stop-losses
-- **Interactive Trading** - Market-on-Open (MOO) and limit order support
-- **Backtesting Support** - ASOF_DATE override for historical analysis
-- **Performance Analytics** - CAPM analysis, Sharpe/Sortino ratios, drawdown metrics
-- **Trade Logging** - Complete transparency with detailed execution logs
+- Issues: bugs, edge cases, or design critiques  
+- Pull Requests: improvements, refactors, or extensions  
+- Collaboration: high-quality contributors may be invited to help maintain future experiments
 
-## System Requirements
-- Python  3.11+
-- Internet connection for market data
-- ~10MB storage for CSV data files
+Contributing guide:  
+https://github.com/LuckyOne7777/ChatGPT-Micro-Cap-Experiment/blob/main/Other/CONTRIBUTING.md
 
-# Follow Along
-The experiment runs from June 2025 to December 2025.  
-Every trading day I will update the portfolio CSV file.  
-If you feel inspired to do something similar, feel free to use this as a blueprint.
+---
 
-Updates are posted weekly on my blog, more coming soon!
+## Contact
 
-Blog: [A.I Controls Stock Account](https://nathanbsmith729.substack.com)
-
-Have feature requests or any advice?  
-
-Please reach out here: **nathanbsmith.business@gmail.com**
+All my links can be found on my profile, feel free to reach out anywhere!
